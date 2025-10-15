@@ -1,10 +1,12 @@
 package com.example.lvl_up.ui
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -59,25 +62,22 @@ fun ProductScreen(navController: NavController) {
 @Composable
 fun ProductListContent(products: List<Product>, navController: NavController, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        // --- HEADER (productos-header) ---
-        Row(
+        Column (
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 28.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Productos",
-                fontSize = 2.1.sp * 16, // Simula el tamaño del h1
-                color = Accent, // Color #03ffe2 del CSS
+                fontSize = 2.1.sp * 16,
+                color = Accent,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge
             )
 
-            // Botón "Crear producto" (.btn-crear-producto)
             Button(
-                onClick = { /* Navegar a crear_producto.html */ navController.navigate("crear_producto") },
+                onClick = { },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent, // background: #03ffe2
                     contentColor = FondoPanel // color: #23293e
@@ -87,11 +87,11 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
             ) {
                 Icon(Icons.Filled.AddCircle, contentDescription = "Crear producto", modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(7.dp))
-                Text("Crear producto", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text("Crear producto", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = FondoDark)
             }
         }
 
-        // --- TABLE WRAPPER (productos-table-wrapper) ---
+        // --- Tabla de productos ---
         Surface(
             shape = RoundedCornerShape(15.dp), // border-radius: 15px
             color = FondoPanel, // background: #23293e
@@ -123,18 +123,12 @@ fun ProductTableHeader() {
             .background(FondoDark, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)) // background: #181c25
             .padding(vertical = 14.dp),
     ) {
-        val headerColor = Accent
-        val headerWeight = FontWeight.SemiBold
-        val textSize = 14.sp
-
-        Text("ID", Modifier.weight(0.5f), color = headerColor, fontWeight = headerWeight, fontSize = textSize)
-        Text("Imagen", Modifier.weight(0.8f), color = headerColor, fontWeight = headerWeight, fontSize = textSize)
-        Text("Nombre", Modifier.weight(2f), color = headerColor, fontWeight = headerWeight, fontSize = textSize)
-        Text("Categoría", Modifier.weight(1f), color = headerColor, fontWeight = headerWeight, fontSize = textSize)
-        Text("Precio", Modifier.weight(1f), color = headerColor, fontWeight = headerWeight, fontSize = textSize)
-        Text("Stock", Modifier.weight(0.7f), color = headerColor, fontWeight = headerWeight, fontSize = textSize)
-        Text("Acciones", Modifier.weight(1f), color = headerColor, fontWeight = headerWeight, fontSize = textSize)
-    }
+        Text("Productos",
+            Modifier.weight(0.5f),
+            color = Accent, fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center)
+        }
 }
 
 // ----------------------------------------------------------------------------------
@@ -148,39 +142,63 @@ fun ProductRow(product: Product) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // ID
-        Text(product.id.toString(), Modifier.weight(0.5f), color = TextoPrincipal, fontSize = 14.sp)
+        Text(product.id.toString(),
+            Modifier.weight(1.0f),
+            color = TextoPrincipal,
+            fontSize = 14.sp)
 
         // Imagen (Placeholder que simula .producto-img)
-        Box(
+        Column (
             modifier = Modifier
-                .weight(0.8f)
-                .size(52.dp)
+                .weight(4.5f)
+                .padding(start = 16.dp),
+            horizontalAlignment = Alignment.Start
+        ){
+            Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .aspectRatio(1f)
                 .background(FondoDark, shape = RoundedCornerShape(10.dp))
                 .border(2.dp, Accent, RoundedCornerShape(10.dp))
+
         ) {
-            Text(text = "IMG", fontSize = 10.sp, modifier = Modifier.align(Alignment.Center), color = TextoSecundario)
+            Text(text = "IMG",
+                fontSize = 10.sp,
+                modifier = Modifier.align(Alignment.Center),
+                color = TextoSecundario)
+        }
+            Spacer(Modifier.height(7.dp))
+
+            Text(product.name,
+                modifier = Modifier.fillMaxWidth(),
+                color = TextoPrincipal,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center)
+
+            Text("Stock: ${product.stock}",
+                modifier = Modifier.fillMaxWidth(),
+                color = TextoPrincipal,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center)
+
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Accent,
+                    contentColor = FondoDark
+                ),
+                shape = CutCornerShape(
+                    bottomStart = 20.dp,
+                    bottomEnd = 20.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
+                modifier = Modifier.fillMaxWidth()
+
+            ) {
+                Icon(Icons.Filled.Edit, contentDescription = "Editar", modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(5.dp))
+                Text("Editar", fontSize = 14.sp, color = FondoDark)
+            }
         }
 
-        // Nombre, Categoría, Precio, Stock
-        Text(product.name, Modifier.weight(2f), color = TextoPrincipal, fontSize = 14.sp)
-        Text(product.category, Modifier.weight(1f), color = TextoPrincipal, fontSize = 14.sp)
-        Text(product.price, Modifier.weight(1f), color = TextoPrincipal, fontSize = 14.sp)
-        Text(product.stock.toString(), Modifier.weight(0.7f), color = TextoPrincipal, fontSize = 14.sp)
-
-        // Botón Editar (.btn-editar-producto)
-        Button(
-            onClick = { /* Acción de editar */ },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = FondoDark, // background: #222a50 (cercano a FondoDark)
-                contentColor = Accent // color: #03ffe2
-            ),
-            shape = RoundedCornerShape(6.dp),
-            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(Icons.Filled.Edit, contentDescription = "Editar", modifier = Modifier.size(16.dp))
-            Spacer(Modifier.width(5.dp))
-            Text("Editar", fontSize = 14.sp)
-        }
     }
 }

@@ -18,8 +18,8 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "admin") {
-                    composable("admin") { AdminScreen(navController) }  // AdminScreen recibe navController
-                    composable("productos") { ProductScreen() }
+                    composable("admin") { AdminScreen(navController) }
+                    composable("productos") { ProductScreen(navController) }
                 }
             }
         }

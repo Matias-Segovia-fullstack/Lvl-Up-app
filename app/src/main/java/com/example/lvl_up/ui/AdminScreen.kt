@@ -91,7 +91,9 @@ fun SidebarMenu(navController: NavController, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        SidebarButton (Icons.Default.Home, "Inicio"){ }
+        SidebarButton (Icons.Default.Home, "Inicio"){
+            navController.navigate("admin")
+        }
         SidebarButton (Icons.Default.ShoppingCart, "Productos"){
             navController.navigate("productos")
         }
