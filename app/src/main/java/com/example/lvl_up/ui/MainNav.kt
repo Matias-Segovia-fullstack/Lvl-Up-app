@@ -11,6 +11,8 @@ fun MainApp() {
 
     NavHost(navController = navController, startDestination = "admin") {
         composable("admin") { AdminScreen(navController) }
+        composable("user") { UserScreen(navController) }
         composable("productos") { ProductScreen(navController) }
+        composable ("editProducto") { EditProducto((navController))}
     }
 }

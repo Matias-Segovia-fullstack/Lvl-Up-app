@@ -97,7 +97,9 @@ fun SidebarMenu(navController: NavController, modifier: Modifier = Modifier) {
         SidebarButton (Icons.Default.ShoppingCart, "Productos"){
             navController.navigate("productos")
         }
-        SidebarButton (Icons.Default.Person, "Usuarios"){ }
+        SidebarButton (Icons.Default.Person, "Usuarios"){
+            navController.navigate("user")
+        }
 
 
         Spacer(modifier = Modifier.weight(1f))

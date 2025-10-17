@@ -1,6 +1,7 @@
 package com.example.lvl_up.ui
 
-import android.R
+
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -21,13 +22,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.lvl_up.ui.theme.* import com.example.lvl_up.data.Product
-import com.example.lvl_up.data.sampleProducts
+import com.example.lvl_up.ui.theme.* import com.example.lvl_up.data.User
+import com.example.lvl_up.data.sampleUsers
 
 
 @Composable
-fun ProductScreen(navController: NavController) {
-    val products = sampleProducts
+fun UserScreen(navController: NavController) {
+    val users = sampleUsers
 
     Box(
         modifier = Modifier
@@ -45,9 +46,9 @@ fun ProductScreen(navController: NavController) {
                 modifier = Modifier.weight(0.55f)
             )
 
-            // Contenido principal (Tabla de productos)
-            ProductListContent(
-                products = products,
+
+            UserListContent(
+                users = users,
                 navController = navController,
                 modifier = Modifier
                     .weight(0.75f)
@@ -60,7 +61,7 @@ fun ProductScreen(navController: NavController) {
 // ----------------------------------------------------------------------------------
 
 @Composable
-fun ProductListContent(products: List<Product>, navController: NavController, modifier: Modifier = Modifier) {
+fun UserListContent(users: List<User>, navController: NavController, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Column (
             modifier = Modifier
@@ -69,7 +70,7 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Productos",
+                text = "Usuarios",
                 fontSize = 2.1.sp * 16,
                 color = Accent,
                 fontWeight = FontWeight.SemiBold,
@@ -85,9 +86,9 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
                 shape = RoundedCornerShape(7.dp),
                 modifier = Modifier.height(40.dp)
             ) {
-                Icon(Icons.Filled.AddCircle, contentDescription = "Crear producto", modifier = Modifier.size(20.dp))
+                Icon(Icons.Filled.AddCircle, contentDescription = "Crear usuario", modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(7.dp))
-                Text("Crear producto", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = FondoDark)
+                Text("Crear usuario", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = FondoDark)
             }
         }
 
@@ -100,11 +101,11 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
         ) {
             LazyColumn(modifier = Modifier.padding(24.dp)) {
                 // Encabezado de la tabla (th)
-                item { ProductTableHeader() }
+                item { UserTableHeader() }
 
                 // Filas de los productos (tr)
-                items(products) { product ->
-                    ProductRow(product, navController)
+                items(users) { user ->
+                    UserRow(user, navController)
                     // Separador de fila (simulando el border-bottom)
                     Divider(color = TextoSecundario.copy(alpha = 0.3f), thickness = 1.dp)
                 }
@@ -116,25 +117,25 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
 // ----------------------------------------------------------------------------------
 
 @Composable
-fun ProductTableHeader() {
+fun UserTableHeader() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(FondoDark, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)) // background: #181c25
             .padding(vertical = 14.dp),
     ) {
-        Text("Productos",
+        Text("Usuarios",
             Modifier.weight(0.5f),
             color = Accent, fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             textAlign = TextAlign.Center)
-        }
+    }
 }
 
 // ----------------------------------------------------------------------------------
 
 @Composable
-fun ProductRow(product: Product, navController: NavController) {
+fun UserRow(user: User, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -142,7 +143,7 @@ fun ProductRow(product: Product, navController: NavController) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // ID
-        Text(product.id.toString(),
+        Text(user.id.toString(),
             Modifier.weight(1.0f),
             color = TextoPrincipal,
             fontSize = 14.sp)
@@ -155,35 +156,40 @@ fun ProductRow(product: Product, navController: NavController) {
             horizontalAlignment = Alignment.Start
         ){
             Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .aspectRatio(1f)
-                .background(FondoDark, shape = RoundedCornerShape(10.dp))
-                .border(2.dp, Accent, RoundedCornerShape(10.dp))
+                modifier = Modifier
+                    .fillMaxSize()
+                    .aspectRatio(1f)
+                    .background(FondoDark, shape = RoundedCornerShape(10.dp))
+                    .border(2.dp, Accent, RoundedCornerShape(10.dp))
 
-        ) {
-            Text(text = "IMG",
-                fontSize = 10.sp,
-                modifier = Modifier.align(Alignment.Center),
-                color = TextoSecundario)
-        }
+            ) {
+                Text(text = "IMG",
+                    fontSize = 10.sp,
+                    modifier = Modifier.align(Alignment.Center),
+                    color = TextoSecundario)
+            }
             Spacer(Modifier.height(7.dp))
 
-            Text(product.name,
+            Text(user.nombre,
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center)
 
-            Text("Stock: ${product.stock}",
+            Text("Correo: ${user.correo}",
+                modifier = Modifier.fillMaxWidth(),
+                color = TextoPrincipal,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center)
+            Text("Rol: ${user.rol}",
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center)
 
             Button(
-                onClick = { navController.navigate("editProducto")
-                          },
+                onClick = { navController.navigate("editUsuario")
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent,
                     contentColor = FondoDark
