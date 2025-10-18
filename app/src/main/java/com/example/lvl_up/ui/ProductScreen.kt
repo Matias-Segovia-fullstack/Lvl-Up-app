@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.lvl_up.ui.theme.* import com.example.lvl_up.data.Product
+import com.example.lvl_up.ui.theme_Admin.* import com.example.lvl_up.data.Product
 import com.example.lvl_up.data.sampleProducts
 
 
@@ -37,20 +37,21 @@ fun ProductScreen(navController: NavController) {
                 )
             )
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
-            // Reutilizamos el SidebarMenu de AdminScreen.kt
-            SidebarMenu(
-                navController = navController,
-                modifier = Modifier.weight(0.585f)
-            )
-
-            // Contenido principal (Tabla de productos)
+        Column (modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+        ) {
             ProductListContent(
                 products = products,
                 navController = navController,
                 modifier = Modifier
-                    .weight(0.75f)
+                    .weight(1f)
                     .padding(24.dp)
+            )
+
+            DownbarMenu(
+                navController = navController,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -69,14 +70,16 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
         ) {
             Text(
                 text = "Productos",
-                fontSize = 28.sp,
+                fontSize = 40.sp,
                 color = Accent,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge
             )
 
             Button(
-                onClick = { },
+                onClick = {
+                    navController.navigate("crearProducto")
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent, // background: #03ffe2
                     contentColor = FondoPanel // color: #23293e
@@ -171,13 +174,13 @@ fun ProductRow(product: Product, navController: NavController) {
             Text(product.name,
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
-                fontSize = 12.sp,
+                fontSize = 15.sp,
                 textAlign = TextAlign.Center)
 
             Text("Stock: ${product.stock}",
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
-                fontSize = 11.sp,
+                fontSize = 13.sp,
                 textAlign = TextAlign.Center)
 
             Button(
@@ -196,7 +199,7 @@ fun ProductRow(product: Product, navController: NavController) {
             ) {
                 Icon(Icons.Filled.Edit, contentDescription = "Editar", modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(5.dp))
-                Text("Editar", fontSize = 11.sp, color = FondoDark)
+                Text("Editar", fontSize = 16.sp, color = FondoDark)
             }
         }
 

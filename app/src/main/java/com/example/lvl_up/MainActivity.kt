@@ -7,9 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.lvl_up.ui.AdminScreen
+import com.example.lvl_up.ui.CreateProduct
+import com.example.lvl_up.ui.CreateUser
+import com.example.lvl_up.ui.EditProducto
 import com.example.lvl_up.ui.ProductScreen
 import com.example.lvl_up.ui.UserScreen
-import com.example.lvl_up.ui.theme.AdminTheme
+import com.example.lvl_up.ui.theme_Admin.AdminTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +25,9 @@ class MainActivity : ComponentActivity() {
                     composable("admin") { AdminScreen(navController) }
                     composable("productos") { ProductScreen(navController) }
                     composable("user") { UserScreen(navController) }
+                    composable ("editProducto") { EditProducto((navController))}
+                    composable ("crearProducto"){ CreateProduct((navController)) }
+                    composable ("crearUsuario"){ CreateUser(navController) }
                 }
             }
         }

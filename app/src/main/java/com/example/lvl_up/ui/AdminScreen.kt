@@ -1,5 +1,6 @@
 package com.example.lvl_up.ui
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,7 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lvl_up.ui.theme.*
+import com.example.lvl_up.ui.theme_Admin.*
 import androidx.navigation.NavController
 
 
@@ -32,83 +33,81 @@ fun AdminScreen(navController: NavController) {
                 )
             )
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
+        // CAMBIO 1: Usamos Column para apilar el Contenido y la Barra Inferior
+        Column (modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+        ) {
 
-            // --- Sidebar ---
-            SidebarMenu(navController = navController, modifier = Modifier.weight(0.585f))
-
-            // --- Contenido principal ---
+            // --- Contenido principal (Peso se aplica aquí para ocupar el espacio restante) ---
             MainContent(
                 modifier = Modifier
-                    .weight(0.75f)
+                    .weight(1f) // ⬅️ Nuevo peso para ocupar todo el espacio vertical sobrante
                     .padding(24.dp)
             )
+
+            // --- Barra Inferior (SidebarMenu) ---
+            // Se usa el peso 0.585f que tenías, pero el valor final será 1f en horizontal
+            DownbarMenu(navController = navController, modifier = Modifier.fillMaxWidth()) // ⬅️ Se usa fillMaxWidth en lugar de weight
         }
     }
 }
 
 @Composable
-fun SidebarButton(
+fun DownbarButton(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     text: String,
     isLogout: Boolean = false,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isLogout) ErrorColor.copy(alpha = 0.15f) else FondoPanel
+    val backgroundColor = FondoPanel
     val textColor = if (isLogout) ErrorColor else TextoPrincipal
     val iconTint = if (isLogout) ErrorColor else Accent
 
-    Row(
+    Column (
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp)
-            .background(backgroundColor, shape = RoundedCornerShape(12.dp))
+            .padding(vertical = 4.dp, horizontal = 0.dp) // Ajuste vertical
+            .background(backgroundColor, shape = RoundedCornerShape(0.dp)) // Sin radio de esquina en la barra
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(icon, contentDescription = text, tint = iconTint)
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(text, color = textColor, style = MaterialTheme.typography.bodyLarge, fontSize = 12.sp)
+        Icon(icon, contentDescription = text, tint = iconTint, modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.height(4.dp)) // Espacio vertical
+        Text(text, color = textColor, style = MaterialTheme.typography.labelSmall, fontSize = 10.sp) // Texto más pequeño
     }
 }
 
 @Composable
-fun SidebarMenu(navController: NavController, modifier: Modifier = Modifier) {
-    Column(
+fun DownbarMenu(navController: NavController, modifier: Modifier = Modifier) {
+    Row(
         modifier = modifier
-            .fillMaxHeight()
-            .padding(16.dp)
-            .background(FondoPanel, shape = RoundedCornerShape(20.dp)),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth() // ⬅️ Ocupa todo el ancho
+            .height(70.dp) // ⬅️ Altura fija para la barra inferior
+            .background(FondoPanel, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // Fondo y radio superior
+            .padding(horizontal = 4.dp), // Padding lateral
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround // Distribuye el espacio entre los botones
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            "Mi Tienda PC Gamer",
-            color = Accent,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            modifier = modifier.fillMaxWidth())
+        // Eliminamos el texto "Mi Tienda PC Gamer" y los Spacers innecesarios en la barra inferior
 
-        Spacer(modifier = Modifier.height(30.dp))
-
-        SidebarButton (Icons.Default.Home, "Inicio"){
+        DownbarButton(Icons.Default.Home, "Inicio") {
             navController.navigate("admin")
         }
-        SidebarButton (Icons.Default.ShoppingCart, "Productos"){
+        DownbarButton(Icons.Default.ShoppingCart, "Productos") {
             navController.navigate("productos")
         }
-        SidebarButton (Icons.Default.Person, "Usuarios"){
+        DownbarButton(Icons.Default.Person, "Usuarios") {
             navController.navigate("user")
         }
 
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        SidebarButton (Icons.Default.ExitToApp, "Salir", isLogout = true){ }
-        Spacer(modifier = Modifier.height(16.dp))
+        // El botón de Salir se puede incluir como el último elemento:
+        DownbarButton(Icons.Default.ExitToApp, "Salir", isLogout = true) { }
     }
 }
+
+// ... (Las funciones MainContent y WidgetCard se mantienen sin cambios) ...
+// Nota: La función MainContent ahora recibe todo el peso vertical (1f) de la Column
 
 @Composable
 fun MainContent(modifier: Modifier = Modifier) {
@@ -117,7 +116,7 @@ fun MainContent(modifier: Modifier = Modifier) {
             text = "Bienvenido Administrador",
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
-            fontSize = 22.sp,
+            fontSize = 30.sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -129,13 +128,14 @@ fun MainContent(modifier: Modifier = Modifier) {
             "Selecciona una opción del menú para comenzar a gestionar la tienda.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
+            fontSize = 15.sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(bottom = 24.dp)
         )
 
-        Column (
+        Column(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()

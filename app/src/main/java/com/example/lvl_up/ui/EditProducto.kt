@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.lvl_up.data.sampleProducts
-import com.example.lvl_up.ui.theme.FondoGradientEnd
-import com.example.lvl_up.ui.theme.FondoGradientStart
+import com.example.lvl_up.ui.theme_Admin.FondoGradientEnd
+import com.example.lvl_up.ui.theme_Admin.FondoGradientStart
 
 @Composable
 fun EditProducto(navController: NavController) {
@@ -29,7 +29,7 @@ fun EditProducto(navController: NavController) {
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             // Reutilizamos el SidebarMenu de AdminScreen.kt
-            SidebarMenu(
+            DownbarMenu(
                 navController = navController,
                 modifier = Modifier.weight(0.55f)
             )
