@@ -1,4 +1,4 @@
-package com.example.lvl_up.ui.theme
+package com.example.lvl_up.ui.theme_Admin
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

@@ -1,4 +1,4 @@
-package com.example.lvl_up.ui.theme
+package com.example.lvl_up.ui.theme_Admin
 
 import androidx.compose.ui.graphics.Color
 

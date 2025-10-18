@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.lvl_up.ui.theme.*
+import com.example.lvl_up.ui.theme_Admin.*
 import com.example.lvl_up.data.User
 import com.example.lvl_up.data.sampleUsers
 
@@ -38,20 +38,23 @@ fun UserScreen(navController: NavController) {
                 )
             )
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
+        Column (modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 50.dp)
+        ) {
             // Reutilizamos el SidebarMenu de AdminScreen.kt
-            SidebarMenu(
-                navController = navController,
-                modifier = Modifier.weight(0.585f)
-            )
-
 
             UserListContent(
                 users = users,
                 navController = navController,
                 modifier = Modifier
-                    .weight(0.75f)
+                    .weight(1f)
                     .padding(24.dp)
+            )
+
+            DownbarMenu(
+                navController = navController,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -70,14 +73,16 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
         ) {
             Text(
                 text = "Usuarios", // Title: "Usuarios"
-                fontSize = 28.sp,
+                fontSize = 40.sp,
                 color = Accent,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge
             )
 
             Button(
-                onClick = { /* Navegar a crear usuario */ }, // Button to create user
+                onClick = {
+                    navController.navigate("crearUsuario")
+                          }, // Button to create user
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent, // background: #03ffe2
                     contentColor = FondoPanel // color: #23293e
@@ -153,12 +158,12 @@ fun UserRow(user: User, navController: NavController) {
             modifier = Modifier
                 .weight(4.5f)
                 .padding(start = 16.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
             // Avatar Placeholder (Simulating .usuario-avatar CSS/HTML element)
             Box(
                 modifier = Modifier
-                    .size(52.dp) // size: 42px in css + border
+                    .size(130.dp) // size: 42px in css + border
                     .background(FondoDark, shape = RoundedCornerShape(50)) // border-radius: 50%
                     .border(2.dp, Accent, RoundedCornerShape(50)), // border: 2px solid #03ffe2
                 contentAlignment = Alignment.Center
@@ -173,21 +178,21 @@ fun UserRow(user: User, navController: NavController) {
             Text(user.nombre,
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
-                fontSize = 12.sp,
+                fontSize = 16.sp,
                 textAlign = TextAlign.Center)
 
             // Email
             Text(user.correo,
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoSecundario,
-                fontSize = 4.sp,
+                fontSize = 11.sp,
                 textAlign = TextAlign.Center)
 
             // Rol
             Text("Rol: ${user.rol}",
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoSecundario,
-                fontSize = 11.sp,
+                fontSize = 13.sp,
                 textAlign = TextAlign.Center)
 
             Spacer(Modifier.height(10.dp))
@@ -208,7 +213,7 @@ fun UserRow(user: User, navController: NavController) {
             ) {
                 Icon(Icons.Filled.Edit, contentDescription = "Editar", modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(5.dp))
-                Text("Editar", fontSize = 11.sp, color = FondoDark)
+                Text("Editar", fontSize = 16.sp, color = FondoDark)
             }
         }
 
