@@ -98,7 +98,7 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(modifier = Modifier.padding(24.dp)) {
-                // Encabezado de la tabla (th)
+                // Encabetabla (th)
                 item { ProductTableHeader() }
 
                 // Filas de los productos (tr)
