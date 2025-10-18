@@ -1,6 +1,5 @@
 package com.example.lvl_up.ui
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -42,7 +41,7 @@ fun ProductScreen(navController: NavController) {
             // Reutilizamos el SidebarMenu de AdminScreen.kt
             SidebarMenu(
                 navController = navController,
-                modifier = Modifier.weight(0.55f)
+                modifier = Modifier.weight(0.585f)
             )
 
             // Contenido principal (Tabla de productos)
@@ -70,7 +69,7 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
         ) {
             Text(
                 text = "Productos",
-                fontSize = 2.1.sp * 16,
+                fontSize = 28.sp,
                 color = Accent,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge
@@ -87,7 +86,7 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
             ) {
                 Icon(Icons.Filled.AddCircle, contentDescription = "Crear producto", modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(7.dp))
-                Text("Crear producto", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = FondoDark)
+                Text("Crear producto", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = FondoDark)
             }
         }
 
@@ -145,7 +144,7 @@ fun ProductRow(product: Product, navController: NavController) {
         Text(product.id.toString(),
             Modifier.weight(1.0f),
             color = TextoPrincipal,
-            fontSize = 14.sp)
+            fontSize = 10.sp)
 
         // Imagen (Placeholder que simula .producto-img)
         Column (
@@ -172,13 +171,13 @@ fun ProductRow(product: Product, navController: NavController) {
             Text(product.name,
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 textAlign = TextAlign.Center)
 
             Text("Stock: ${product.stock}",
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
-                fontSize = 12.sp,
+                fontSize = 11.sp,
                 textAlign = TextAlign.Center)
 
             Button(
@@ -189,15 +188,15 @@ fun ProductRow(product: Product, navController: NavController) {
                     contentColor = FondoDark
                 ),
                 shape = CutCornerShape(
-                    bottomStart = 20.dp,
-                    bottomEnd = 20.dp),
+                    bottomStart = 10.dp,
+                    bottomEnd = 10.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 modifier = Modifier.fillMaxWidth()
 
             ) {
                 Icon(Icons.Filled.Edit, contentDescription = "Editar", modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(5.dp))
-                Text("Editar", fontSize = 14.sp, color = FondoDark)
+                Text("Editar", fontSize = 11.sp, color = FondoDark)
             }
         }
 

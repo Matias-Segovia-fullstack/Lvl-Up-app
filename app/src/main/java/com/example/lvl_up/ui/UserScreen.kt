@@ -1,7 +1,5 @@
 package com.example.lvl_up.ui
 
-
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -22,7 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.lvl_up.ui.theme.* import com.example.lvl_up.data.User
+import com.example.lvl_up.ui.theme.*
+import com.example.lvl_up.data.User
 import com.example.lvl_up.data.sampleUsers
 
 
@@ -43,7 +42,7 @@ fun UserScreen(navController: NavController) {
             // Reutilizamos el SidebarMenu de AdminScreen.kt
             SidebarMenu(
                 navController = navController,
-                modifier = Modifier.weight(0.55f)
+                modifier = Modifier.weight(0.585f)
             )
 
 
@@ -70,15 +69,15 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Usuarios",
-                fontSize = 2.1.sp * 16,
+                text = "Usuarios", // Title: "Usuarios"
+                fontSize = 28.sp,
                 color = Accent,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge
             )
 
             Button(
-                onClick = { },
+                onClick = { /* Navegar a crear usuario */ }, // Button to create user
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent, // background: #03ffe2
                     contentColor = FondoPanel // color: #23293e
@@ -88,11 +87,11 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
             ) {
                 Icon(Icons.Filled.AddCircle, contentDescription = "Crear usuario", modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(7.dp))
-                Text("Crear usuario", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = FondoDark)
+                Text("Crear usuario", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = FondoDark)
             }
         }
 
-        // --- Tabla de productos ---
+        // --- Tabla de Usuarios ---
         Surface(
             shape = RoundedCornerShape(15.dp), // border-radius: 15px
             color = FondoPanel, // background: #23293e
@@ -103,7 +102,7 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
                 // Encabezado de la tabla (th)
                 item { UserTableHeader() }
 
-                // Filas de los productos (tr)
+                // Filas de los usuarios (tr)
                 items(users) { user ->
                     UserRow(user, navController)
                     // Separador de fila (simulando el border-bottom)
@@ -124,6 +123,7 @@ fun UserTableHeader() {
             .background(FondoDark, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)) // background: #181c25
             .padding(vertical = 14.dp),
     ) {
+        // Since UserRow displays ID and then a column of details, the header should match the weight distribution.
         Text("Usuarios",
             Modifier.weight(0.5f),
             color = Accent, fontWeight = FontWeight.SemiBold,
@@ -148,62 +148,67 @@ fun UserRow(user: User, navController: NavController) {
             color = TextoPrincipal,
             fontSize = 14.sp)
 
-        // Imagen (Placeholder que simula .producto-img)
+        // User Details (Avatar, Name, Email, Rol, Edit Button)
         Column (
             modifier = Modifier
                 .weight(4.5f)
                 .padding(start = 16.dp),
             horizontalAlignment = Alignment.Start
         ){
+            // Avatar Placeholder (Simulating .usuario-avatar CSS/HTML element)
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .aspectRatio(1f)
-                    .background(FondoDark, shape = RoundedCornerShape(10.dp))
-                    .border(2.dp, Accent, RoundedCornerShape(10.dp))
-
+                    .size(52.dp) // size: 42px in css + border
+                    .background(FondoDark, shape = RoundedCornerShape(50)) // border-radius: 50%
+                    .border(2.dp, Accent, RoundedCornerShape(50)), // border: 2px solid #03ffe2
+                contentAlignment = Alignment.Center
             ) {
-                Text(text = "IMG",
-                    fontSize = 10.sp,
-                    modifier = Modifier.align(Alignment.Center),
+                Text(text = "AVATAR",
+                    fontSize = 8.sp,
                     color = TextoSecundario)
             }
             Spacer(Modifier.height(7.dp))
 
+            // Name
             Text(user.nombre,
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center)
-
-            Text("Correo: ${user.correo}",
-                modifier = Modifier.fillMaxWidth(),
-                color = TextoPrincipal,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center)
+
+            // Email
+            Text(user.correo,
+                modifier = Modifier.fillMaxWidth(),
+                color = TextoSecundario,
+                fontSize = 4.sp,
+                textAlign = TextAlign.Center)
+
+            // Rol
             Text("Rol: ${user.rol}",
                 modifier = Modifier.fillMaxWidth(),
-                color = TextoPrincipal,
-                fontSize = 12.sp,
+                color = TextoSecundario,
+                fontSize = 11.sp,
                 textAlign = TextAlign.Center)
 
+            Spacer(Modifier.height(10.dp))
+
+            // Edit Button (Acciones)
             Button(
-                onClick = { navController.navigate("editUsuario")
-                },
+                onClick = {    },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent,
                     contentColor = FondoDark
                 ),
                 shape = CutCornerShape(
-                    bottomStart = 20.dp,
-                    bottomEnd = 20.dp),
+                    bottomStart = 10.dp,
+                    bottomEnd = 10.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 modifier = Modifier.fillMaxWidth()
 
             ) {
                 Icon(Icons.Filled.Edit, contentDescription = "Editar", modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(5.dp))
-                Text("Editar", fontSize = 14.sp, color = FondoDark)
+                Text("Editar", fontSize = 11.sp, color = FondoDark)
             }
         }
 

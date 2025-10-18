@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.lvl_up.ui.AdminScreen
 import com.example.lvl_up.ui.ProductScreen
+import com.example.lvl_up.ui.UserScreen
 import com.example.lvl_up.ui.theme.AdminTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,6 +21,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "admin") {
                     composable("admin") { AdminScreen(navController) }
                     composable("productos") { ProductScreen(navController) }
+                    composable("user") { UserScreen(navController) }
                 }
             }
         }

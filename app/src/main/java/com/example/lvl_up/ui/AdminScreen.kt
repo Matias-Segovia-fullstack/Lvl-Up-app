@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.lvl_up.ui.theme.*
 import androidx.navigation.NavController
 
@@ -34,7 +35,7 @@ fun AdminScreen(navController: NavController) {
         Row(modifier = Modifier.fillMaxSize()) {
 
             // --- Sidebar ---
-            SidebarMenu(navController = navController, modifier = Modifier.weight(0.55f))
+            SidebarMenu(navController = navController, modifier = Modifier.weight(0.585f))
 
             // --- Contenido principal ---
             MainContent(
@@ -68,7 +69,7 @@ fun SidebarButton(
     ) {
         Icon(icon, contentDescription = text, tint = iconTint)
         Spacer(modifier = Modifier.width(12.dp))
-        Text(text, color = textColor, style = MaterialTheme.typography.bodyLarge)
+        Text(text, color = textColor, style = MaterialTheme.typography.bodyLarge, fontSize = 12.sp)
     }
 }
 
@@ -116,9 +117,12 @@ fun MainContent(modifier: Modifier = Modifier) {
             text = "Bienvenido Administrador",
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
+            fontSize = 22.sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .padding(bottom = 10.dp)
+
         )
 
         Text(
