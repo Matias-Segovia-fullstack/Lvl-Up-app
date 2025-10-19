@@ -21,10 +21,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.lvl_up.ui.theme_Admin.*
+import com.example.lvl_up.data.Product // 🛑 Importa tu Entity
+import com.example.lvl_up.LvlUpApplication
+import com.example.lvl_up.viewmodel.ProductViewModel
+import com.example.lvl_up.viewmodel.ProductViewModelFactory
+import androidx.compose.ui.platform.LocalContext // Para obtener el Contexto
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
 fun CreateProduct(navController: NavController) {
+
+    val context = LocalContext.current
+    val application = context.applicationContext as LvlUpApplication
+    val repository = application.productRepository
+    val factory = ProductViewModelFactory(repository)
+    val viewModel: ProductViewModel = viewModel(factory = factory)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +59,7 @@ fun CreateProduct(navController: NavController) {
                     .padding(horizontal = 24.dp) // Padding lateral
                     .verticalScroll(rememberScrollState())
             ) {
-                CreateProductForm(navController)
+                CreateProductForm(navController, viewModel)
 
                 // Espacio extra al final del scroll
                 Spacer(modifier = Modifier.height(30.dp))
@@ -62,7 +75,7 @@ fun CreateProduct(navController: NavController) {
 }
 
 @Composable
-fun CreateProductForm(navController: NavController) {
+fun CreateProductForm(navController: NavController, viewModel: ProductViewModel) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -201,7 +214,25 @@ fun CreateProductForm(navController: NavController) {
 
                 // --- Botón de Acción ---
                 Button(
-                    onClick = {  }, // Navegar de vuelta a la lista
+                    // 🛑 3. IMPLEMENTACIÓN DEL ONCLICK
+                    onClick = {
+                        // 3.1. Crea el objeto Product con los valores de los estados
+                        val newProduct = Product(
+                            id = 0, // 🛑 Room autogenera el ID
+                            imageUrl = urlImagen,
+                            name = nombre,
+                            category = categoria,
+                            price = precio,
+                            stock = stock.toIntOrNull() ?: 0 // Convierte Stock a Int, si falla usa 0
+                        )
+
+                        // 3.2. Llama a la función de inserción del ViewModel
+                        viewModel.insertProduct(newProduct)
+
+
+                        // 3.3. Navega de vuelta a la lista (ProductScreen)
+                        navController.popBackStack()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Accent,
                         contentColor = FondoPanel
