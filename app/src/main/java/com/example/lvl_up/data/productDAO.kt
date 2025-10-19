@@ -21,4 +21,7 @@ interface ProductDao {
     // --- 4. Operación de Lectura: Obtener por ID (para editar) ---
     @Query("SELECT * FROM products_table WHERE id = :productId")
     suspend fun getProductById(productId: Int): Product?
+
+    @Query("SELECT COUNT(id) FROM products_table")
+    fun getProductCount(): Flow<Int>
 }

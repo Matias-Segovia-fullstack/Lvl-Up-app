@@ -6,6 +6,7 @@ class UserRepository (private val userDAO: UserDAO) {
 
     val allUsers: Flow<List<User>> = userDAO.getAllUsers()
 
+    val userCount: Flow<Int> = userDAO.getUserCount()
 
     suspend fun insert(user: User) {
         userDAO.insertUser(user)
