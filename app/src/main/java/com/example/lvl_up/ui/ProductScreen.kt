@@ -21,19 +21,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.lvl_up.ui.theme_Admin.* import com.example.lvl_up.data.Product
-import com.example.lvl_up.data.sampleProducts
+// 🛑 Ya no necesitamos sampleProducts aquí
+import androidx.compose.runtime.collectAsState // ✅ Importado
+import androidx.compose.ui.platform.LocalContext // ✅ Importado
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.lvl_up.LvlUpApplication // ✅ Importado
+import com.example.lvl_up.viewmodel.ProductViewModel // ✅ Importado
+import com.example.lvl_up.viewmodel.ProductViewModelFactory // ✅ Importado
+import androidx.compose.material3.Text // Asegurando importaciones
+import androidx.compose.runtime.getValue // Necesario para 'by' en collectAsState()
 
 
 @Composable
 fun ProductScreen(navController: NavController) {
-    val products = sampleProducts
+
+    // 🛑 1. CONEXIÓN AL VIEWMODEL USANDO LA FÁBRICA
+    val context = LocalContext.current
+    val application = context.applicationContext as LvlUpApplication
+    val repository = application.productRepository
+    val factory = ProductViewModelFactory(repository)
+
+    val viewModel: ProductViewModel = viewModel(factory = factory)
+
+    // 🛑 2. Observar la lista dinámica de productos de la DB
+    // Reemplaza la antigua lista estática
+    val products by viewModel.productListState.collectAsState()
+
+    // 🛑 3. ELIMINA la línea: val products = sampleProducts
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
-                    listOf(FondoGradientStart, FondoGradientEnd) // Mapeo a body background
+                    listOf(FondoGradientStart, FondoGradientEnd)
                 )
             )
     ) {
@@ -42,7 +63,7 @@ fun ProductScreen(navController: NavController) {
             .padding(top = 50.dp)
         ) {
             ProductListContent(
-                products = products,
+                products = products, // ✅ Ahora usa la lista dinámica
                 navController = navController,
                 modifier = Modifier
                     .weight(1f)
@@ -53,11 +74,14 @@ fun ProductScreen(navController: NavController) {
                 navController = navController,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            // Aquí puedes añadir temporalmente el botón de prueba si lo deseas:
+            // TestProductInsertButton(viewModel = viewModel)
         }
     }
 }
 
-// ----------------------------------------------------------------------------------
+
 
 @Composable
 fun ProductListContent(products: List<Product>, navController: NavController, modifier: Modifier = Modifier) {
