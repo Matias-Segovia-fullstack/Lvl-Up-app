@@ -10,6 +10,7 @@ import com.example.lvl_up.ui.AdminScreen
 import com.example.lvl_up.ui.ProductScreen
 import com.example.lvl_up.ui.UserScreen
 import com.example.lvl_up.ui.theme.AdminTheme
+import com.example.lvl_up.TiendaScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,12 +19,16 @@ class MainActivity : ComponentActivity() {
             AdminTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "admin") {
-                    composable("admin") { AdminScreen(navController) }
-                    composable("productos") { ProductScreen(navController) }
-                    composable("user") { UserScreen(navController) }
+                NavHost(navController = navController, startDestination = "tienda") {
+                    composable(  "admin") { AdminScreen(navController) }
+                    composable(  "productos") { ProductScreen(navController) }
+                    composable( "user") { UserScreen(navController) }
+                    composable("tienda") { TiendaScreen(navController) }
+
+
+                    }
                 }
             }
         }
     }
-}
+

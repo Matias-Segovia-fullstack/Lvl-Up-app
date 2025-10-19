@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.lvl_up.TiendaScreen
 
 @Composable
 fun MainApp() {
@@ -16,5 +17,15 @@ fun MainApp() {
         composable ("editProducto") { EditProducto((navController))}
         // You might need to add a route for "editUsuario" if that screen exists:
         // composable ("editUsuario") { EditUsuarioScreen(navController) }
+        composable ("tienda") { TiendaScreen(navController) }
+        // ... other composable routes ...
+
     }
+
+
+
+
+
+
+
 }
