@@ -208,7 +208,7 @@ fun ProductRow(product: Product, navController: NavController) {
                 textAlign = TextAlign.Center)
 
             Button(
-                onClick = { navController.navigate("editProducto")
+                onClick = {
                           },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent,

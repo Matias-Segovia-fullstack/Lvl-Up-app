@@ -7,14 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.lvl_up"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.lvl_up"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -59,9 +57,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation("androidx.navigation:navigation-compose:2.9.5")
-    implementation("androidx.room:room-ktx:2.8.2")
-    kapt("androidx.room:room-compiler:2.8.2")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
 }
-
