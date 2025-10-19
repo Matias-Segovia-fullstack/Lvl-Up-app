@@ -5,7 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions // Necesario para la configuración del teclado
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -13,19 +14,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType // Necesario para el tipo de teclado
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.lvl_up.ui.theme_Admin.*
-import com.example.lvl_up.data.Product // 🛑 Importa tu Entity
+import com.example.lvl_up.data.Product
 import com.example.lvl_up.LvlUpApplication
-import com.example.lvl_up.viewmodel.ProductViewModel
-import com.example.lvl_up.viewmodel.ProductViewModelFactory
-import androidx.compose.ui.platform.LocalContext // Para obtener el Contexto
+import com.example.lvl_up.viewmodel.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
@@ -47,31 +50,38 @@ fun CreateProduct(navController: NavController) {
                 )
             )
     ) {
-        // Contenedor principal para apilar el contenido y la barra inferior
         Column (modifier = Modifier
             .fillMaxSize()
-            .padding(top = 50.dp) // MARGEN SUPERIOR APLICADO
+            .padding(top = 50.dp)
         ) {
 
             Column(
                 modifier = Modifier
-                    .weight(1f) // Peso 1f para ocupar el espacio restante
-                    .padding(horizontal = 24.dp) // Padding lateral
+                    .weight(1f)
+                    .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 CreateProductForm(navController, viewModel)
 
-                // Espacio extra al final del scroll
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
-            // 2. Barra Inferior (SidebarMenu)
             DownbarMenu(
                 navController = navController,
                 modifier = Modifier.fillMaxWidth()
             )
         }
     }
+}
+
+private fun validatePrice(price: String): Boolean {
+    val priceValue = price.replace(",", ".").toDoubleOrNull()
+    return priceValue != null && priceValue > 0.0
+}
+
+private fun validateStock(stock: String): Boolean {
+    val stockValue = stock.toIntOrNull()
+    return stockValue != null && stockValue > 0
 }
 
 @Composable
@@ -92,7 +102,6 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
             textAlign = TextAlign.Center
         )
 
-        // Definición de estados para los campos del formulario
         var nombre by remember { mutableStateOf("") }
         var precio by remember { mutableStateOf("") }
         var stock by remember { mutableStateOf("") }
@@ -100,6 +109,12 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
         var descripcion by remember { mutableStateOf("") }
         var urlImagen by remember { mutableStateOf("") }
 
+        var nombreError by remember { mutableStateOf<String?>(null) }
+        var precioError by remember { mutableStateOf<String?>(null) }
+        var stockError by remember { mutableStateOf<String?>(null) }
+        var descripcionError by remember { mutableStateOf<String?>(null) }
+        val focusManager = LocalFocusManager.current
+        val (nombreFocus, precioFocus, stockFocus, descripcionFocus, urlFocus) = FocusRequester.createRefs()
 
         val categoriasList = listOf("Computadores", "Tarjetas de Video", "Periféricos", "Monitores", "Almacenamiento", "Accesorios")
 
@@ -111,21 +126,29 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         ) {
-            // Contenedor principal: Column para la pila vertical
             Column(
                 modifier = Modifier
                     .padding(horizontal = 30.dp, vertical = 30.dp)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(19.dp) // Espaciado vertical entre campos
+                verticalArrangement = Arrangement.spacedBy(19.dp)
             ) {
 
                 // --- 1. Nombre del Producto ---
                 OutlinedTextField(
                     value = nombre,
-                    onValueChange = { nombre = it },
+                    onValueChange = { newValue ->
+                        nombre = newValue
+                        nombreError = if (nombre.isBlank()) "El nombre es obligatorio." else null
+                    },
                     label = { Text("Nombre del Producto") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(nombreFocus),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { precioFocus.requestFocus() }),
+                    isError = nombreError != null,
+                    supportingText = { if (nombreError != null) Text(nombreError!!, color = ErrorColor) }
                 )
 
                 // --- 2. Categoría (Dropdown) ---
@@ -171,27 +194,42 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(18.dp)
                 ) {
-                    // Campo Precio
                     OutlinedTextField(
                         value = precio,
-                        onValueChange = { precio = it.filter { char -> char.isDigit() || char == '.' } },
+                        onValueChange = { newValue ->
+                            precio = newValue.filter { char -> char.isDigit() || char == '.' }
+                            precioError = if (precio.isNotEmpty() && !validatePrice(precio)) {
+                                "El precio debe ser mayor que 0."
+                            } else null
+                        },
                         label = { Text("Precio") },
-                        modifier = Modifier.weight(1f),
-                        // ⬅️ SOLUCIÓN: Teclado numérico decimal para el precio
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(precioFocus), // ⬅️ Foco 2
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { stockFocus.requestFocus() }),
+                        isError = precioError != null,
+                        supportingText = { if (precioError != null) Text(precioError!!, color = ErrorColor) }
                     )
 
-                    // Campo Stock
                     OutlinedTextField(
                         value = stock,
-                        onValueChange = { stock = it.filter { char -> char.isDigit() } },
+                        onValueChange = { newValue ->
+                            stock = newValue.filter { char -> char.isDigit() }
+                            stockError = if (stock.isNotEmpty() && !validateStock(stock)) {
+                                "El stock debe ser mayor que 0."
+                            } else null
+                        },
                         label = { Text("Stock") },
-                        modifier = Modifier.weight(1f),
-                        // ⬅️ SOLUCIÓN: Teclado numérico estándar para el stock
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(stockFocus),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { descripcionFocus.requestFocus() }),
+                        isError = stockError != null,
+                        supportingText = { if (stockError != null) Text(stockError!!, color = ErrorColor) }
                     )
                 }
-
                 // --- 4. Descripción ---
                 OutlinedTextField(
                     value = descripcion,
@@ -199,8 +237,13 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                     label = { Text("Descripción") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 100.dp),
+                        .heightIn(min = 100.dp)
+                        .focusRequester(descripcionFocus),
                     maxLines = 5,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { urlFocus.requestFocus() }),
+                    isError = descripcionError != null,
+                    supportingText = { if (descripcionError != null) Text(descripcionError!!, color = ErrorColor) }
                 )
 
                 // --- 5. Imagen (URL/File) ---
@@ -208,30 +251,41 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                     value = urlImagen,
                     onValueChange = { urlImagen = it },
                     label = { Text("URL/File de la Imagen") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(urlFocus),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 )
 
-
-                // --- Botón de Acción ---
                 Button(
-                    // 🛑 3. IMPLEMENTACIÓN DEL ONCLICK
                     onClick = {
-                        // 3.1. Crea el objeto Product con los valores de los estados
-                        val newProduct = Product(
-                            id = 0, // 🛑 Room autogenera el ID
-                            imageUrl = urlImagen,
-                            name = nombre,
-                            category = categoria,
-                            price = precio,
-                            stock = stock.toIntOrNull() ?: 0 // Convierte Stock a Int, si falla usa 0
-                        )
+                        nombreError = if (nombre.isBlank()) "El nombre es obligatorio." else null
+                        precioError = if (!validatePrice(precio)) "El precio debe ser un número mayor que 0." else null
+                        stockError = if (!validateStock(stock)) "El stock debe ser un número entero mayor que 0." else null
+                        descripcionError = if (descripcion.isBlank()) "La descripción es obligatoria." else null
 
-                        // 3.2. Llama a la función de inserción del ViewModel
-                        viewModel.insertProduct(newProduct)
+                        val urlEsValida = urlImagen.isNotBlank()
+                        val categoriaEsValida = categoria.isNotBlank()
 
+                        val hasError = nombreError != null || precioError != null || stockError != null || descripcionError != null || !urlEsValida || !categoriaEsValida
 
-                        // 3.3. Navega de vuelta a la lista (ProductScreen)
-                        navController.popBackStack()
+                        focusManager.clearFocus()
+
+                        if (!hasError) {
+                            val newProduct = Product(
+                                id = 0,
+                                imageUrl = urlImagen,
+                                name = nombre,
+                                category = categoria,
+                                price = precio,
+                                stock = stock.toIntOrNull() ?: 0
+                            )
+
+                            viewModel.insertProduct(newProduct)
+
+                            navController.popBackStack()
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Accent,

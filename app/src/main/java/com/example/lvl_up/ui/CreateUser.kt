@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -13,9 +14,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -26,15 +31,12 @@ import androidx.navigation.NavController
 import com.example.lvl_up.LvlUpApplication
 import com.example.lvl_up.data.User
 import com.example.lvl_up.ui.theme_Admin.*
-// Se eliminan imports de ProductViewModel y ProductViewModelFactory
-import com.example.lvl_up.viewmodel.UserViewModel
-import com.example.lvl_up.viewmodel.UserViewModelFactory
+import com.example.lvl_up.viewmodel.*
 
 
 @Composable
 fun CreateUser(navController: NavController) {
 
-    // 1. INICIALIZACIÓN DEL VIEWMODEL Y REPOSITORIO
     val context = LocalContext.current
     val application = context.applicationContext as LvlUpApplication //
     val repository = application.userRepository //
@@ -50,13 +52,11 @@ fun CreateUser(navController: NavController) {
                 )
             )
     ) {
-        // Contenedor principal para apilar el contenido y la barra inferior
         Column (modifier = Modifier
             .fillMaxSize()
             .padding(top = 50.dp)
         ) {
 
-            // Contenido Principal (Formulario scrollable)
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -67,7 +67,6 @@ fun CreateUser(navController: NavController) {
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
-            // Barra Inferior (Reutiliza el composable DownbarMenu de AdminScreen)
             DownbarMenu(
                 navController = navController,
                 modifier = Modifier.fillMaxWidth()
@@ -76,17 +75,49 @@ fun CreateUser(navController: NavController) {
     }
 }
 
+private fun validateRutFormat(rut: String): Boolean {
+    val rutRegex = Regex("^(\\d{1,2}\\.)?\\d{3}\\.\\d{3}-[0-9kK]$")
+    return rutRegex.matches(rut)
+}
+
+private fun validateNombreFormat(nombre: String): Boolean {
+    if (nombre.length > 40) return false
+    val words = nombre.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+    return words.size == 2
+}
+
+private fun validatePassword(password: String): Boolean {
+    return password.length >= 8
+}
+
+private fun validateEmailFormat(email: String): Boolean {
+    val generalEmailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
+    if (!generalEmailRegex.matches(email)) {
+        return false
+    }
+    val allowedDomains = listOf("@gmail.com", "@duocuc.cl")
+    return allowedDomains.any { email.endsWith(it, ignoreCase = true) }
+}
+
 
 @Composable
 fun CreateUserForm(navController: NavController, viewModel: UserViewModel) {
-    // Definición de estados para los campos del formulario
     var nombre by remember { mutableStateOf("") }
     var rut by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rol by remember { mutableStateOf("Cliente") }
     var avatarUrl by remember { mutableStateOf("") }
+
+    val focusManager = LocalFocusManager.current
+    val (nombreFocus, rutFocus, emailFocus, passwordFocus, avatarFocus) = FocusRequester.createRefs()
+
     val rolesList = listOf("Administrador", "Cliente")
+
+    var nombreError by remember { mutableStateOf<String?>(null) }
+    var rutError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var emailError by remember { mutableStateOf<String?>(null) }
 
 
     Column (modifier = Modifier
@@ -120,39 +151,99 @@ fun CreateUserForm(navController: NavController, viewModel: UserViewModel) {
                 verticalArrangement = Arrangement.spacedBy(19.dp)
             ) {
 
-                // --- 1. Nombre
+                // --- 1. Nombre ---
                 OutlinedTextField(
                     value = nombre,
-                    onValueChange = { nombre = it },
-                    label = { Text("Nombre completo") },
-                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = { newValue ->
+                        nombre = newValue
+                        nombreError = if (nombre.isNotEmpty() && !validateNombreFormat(nombre)) {
+                            "Debe tener solo nombre y apellido y no exceder 40 caracteres."
+                        } else null
+                    },
+                    label = { Text("Nombre y Apellido") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(nombreFocus),
+                    isError = nombreError != null,
+                    supportingText = {
+                        if (nombreError != null) {
+                            Text(nombreError!!, color = ErrorColor)
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { rutFocus.requestFocus() })
                 )
 
                 // --- 2. RUT
                 OutlinedTextField(
                     value = rut,
-                    onValueChange = { rut = it },
+                    onValueChange = { newValue ->
+                        rut = newValue
+                        rutError = if (rut.isNotEmpty() && !validateRutFormat(rut)) {
+                            "Formato RUT incorrecto (ej: 12.345.678-9)."
+                        } else null
+                    },
                     label = { Text("RUT") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(rutFocus),
+                    isError = rutError != null,
+                    supportingText = {
+                        if (rutError != null) {
+                            Text(rutError!!, color = ErrorColor)
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() })
                 )
 
-                // --- 3. Correo electrónico
+                // --- 3. Correo electrónico ---
                 OutlinedTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = { newValue ->
+                        email = newValue
+                        emailError = if (email.isNotEmpty() && !validateEmailFormat(email)) {
+                            "Solo se permiten dominios @gmail.com o @duocuc.cl."
+                        } else null
+                    },
                     label = { Text("Correo electrónico") },
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(emailFocus),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { passwordFocus.requestFocus() }
+                    ),
+                    isError = emailError != null,
+                    supportingText = { if (emailError != null) Text(emailError!!, color = ErrorColor) }
                 )
 
-                // --- 4. Contraseña
+                // --- 4. Contraseña ---
                 OutlinedTextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = { newValue ->
+                        password = newValue
+                        passwordError = if (password.isNotEmpty() && !validatePassword(password)) {
+                            "Mínimo 8 caracteres."
+                        } else null
+                    },
                     label = { Text("Contraseña") },
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    visualTransformation = PasswordVisualTransformation()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(passwordFocus),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { avatarFocus.requestFocus() }
+                    ),
+                    visualTransformation = PasswordVisualTransformation(),
+                    isError = passwordError != null,
+                    supportingText = { if (passwordError != null) Text(passwordError!!, color = ErrorColor) }
                 )
 
                 // --- 5. Rol (Dropdown)
@@ -193,36 +284,43 @@ fun CreateUserForm(navController: NavController, viewModel: UserViewModel) {
                     }
                 }
 
-                // --- 6. Avatar URL
+                // --- 6. Avatar URL ---
                 OutlinedTextField(
                     value = avatarUrl,
                     onValueChange = { avatarUrl = it },
                     label = { Text("Avatar (URL/File input simulado)") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(avatarFocus),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    ),
                 )
 
-
-                // --- Botón de Acción ---
                 Button(
                     onClick = {
-                        val newUser = User(
-                            id = 0,
-                            nombre = nombre,
-                            rut = rut,
-                            correo = email,
-                            contrasena = password,
-                            rol = rol,
-                            avatarUrl = avatarUrl
-                        )
+                        nombreError = if (!validateNombreFormat(nombre)) "Nombre inválido/vacío." else null
+                        rutError = if (!validateRutFormat(rut)) "RUT inválido/vacío." else null
+                        passwordError = if (!validatePassword(password)) "Contraseña requiere 8+ caracteres." else null
+                        emailError = if (!validateEmailFormat(email)) "Email no cumple formato o dominio permitido." else null
 
-                        viewModel.insertUser(newUser)
+                        val hasError = nombreError != null || rutError != null || passwordError != null || emailError != null || email.isBlank()
 
-                        // ✅ Navegación de vuelta a la lista de usuarios.
-                        // Esto asegura que, si la inserción tiene éxito, vuelvas a la lista.
-                        navController.navigate("user") {
-                            popUpTo("user") { inclusive = true }
+                        if (!hasError) {
+                            val newUser = User(
+                                id = 0, nombre = nombre, rut = rut, correo = email,
+                                contrasena = password, rol = rol, avatarUrl = avatarUrl
+                            )
+
+                            viewModel.insertUser(newUser)
+
+                            focusManager.clearFocus()
+
+                            navController.navigate("user") {
+                                popUpTo("user") { inclusive = true }
+                            }
                         }
-
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Accent,
