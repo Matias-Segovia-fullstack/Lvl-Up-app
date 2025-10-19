@@ -12,22 +12,37 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.lvl_up.LvlUpApplication
 import com.example.lvl_up.ui.theme_Admin.*
 import com.example.lvl_up.data.User
-import com.example.lvl_up.data.sampleUsers
+import com.example.lvl_up.viewmodel.UserViewModel
+import com.example.lvl_up.viewmodel.UserViewModelFactory
 
 
 @Composable
 fun UserScreen(navController: NavController) {
-    val users = sampleUsers
+    val context = LocalContext.current
+    val application = context.applicationContext as LvlUpApplication
+    val repository = application.userRepository
+    val factory = UserViewModelFactory(repository)
+
+    val viewModel: UserViewModel = viewModel(factory = factory)
+
+    // 🛑 2. Observar la lista dinámica de productos de la DB
+    // Reemplaza la antigua lista estática
+    val users by viewModel.userListState.collectAsState()
 
     Box(
         modifier = Modifier

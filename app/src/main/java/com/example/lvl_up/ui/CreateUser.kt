@@ -16,18 +16,34 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.lvl_up.LvlUpApplication
+import com.example.lvl_up.data.User
 import com.example.lvl_up.ui.theme_Admin.*
+import com.example.lvl_up.viewmodel.ProductViewModel
+import com.example.lvl_up.viewmodel.ProductViewModelFactory
+import com.example.lvl_up.viewmodel.UserViewModel
+import com.example.lvl_up.viewmodel.UserViewModelFactory
 
 
 @Composable
 fun CreateUser(navController: NavController) {
+
+    val context = LocalContext.current
+    val application = context.applicationContext as LvlUpApplication
+    val repository = application.userRepository
+    val factory = UserViewModelFactory(repository)
+    val viewModel: UserViewModel = viewModel(factory = factory)
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +70,7 @@ fun CreateUser(navController: NavController) {
                 // Título y Botón Volver (crear-usuario-header del HTML)
 
                 // Formulario
-                CreateUserForm(navController)
+                CreateUserForm(navController, viewModel)
 
                 // Espacio extra al final del scroll
                 Spacer(modifier = Modifier.height(30.dp))
@@ -72,7 +88,7 @@ fun CreateUser(navController: NavController) {
 
 
 @Composable
-    fun CreateUserForm(navController: NavController) {
+    fun CreateUserForm(navController: NavController, viewModel: UserViewModel) {
     Column (modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 28.dp),
@@ -91,6 +107,7 @@ fun CreateUser(navController: NavController) {
 
         // Definición de estados para los campos del formulario
         var nombre by remember { mutableStateOf("") }
+        var rut by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var rol by remember { mutableStateOf("Cliente") }
@@ -121,6 +138,13 @@ fun CreateUser(navController: NavController) {
                     value = nombre,
                     onValueChange = { nombre = it },
                     label = { Text("Nombre completo") },
+                    modifier = Modifier.fillMaxWidth(), // ⬅️ Ocupa todo el ancho
+                )
+
+                OutlinedTextField(
+                    value = rut,
+                    onValueChange = { rut = it },
+                    label = { Text("RUT") },
                     modifier = Modifier.fillMaxWidth(), // ⬅️ Ocupa todo el ancho
                 )
 
@@ -192,7 +216,20 @@ fun CreateUser(navController: NavController) {
 
                 // --- Botón de Acción (.btn-crear-usuario-form) ---
                 Button(
-                    onClick = {  }, // Navegar de vuelta a la lista
+                    onClick = {
+                        val newUser = User(
+                            id = 0,
+                            nombre = nombre,
+                            rut = rut,
+                            correo = email,
+                            contrasena = password,
+                            rol = rol,
+                            avatarUrl = avatarUrl
+                        )
+
+                        viewModel.insertUser(newUser)
+
+                    }, // Navegar de vuelta a la lista
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Accent,
                         contentColor = FondoPanel

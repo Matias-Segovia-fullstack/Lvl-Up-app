@@ -3,7 +3,7 @@ package com.example.lvl_up.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lvl_up.data.Product
-import com.example.lvl_up.data.ProductRepository // <-- Importamos el Repositorio
+import com.example.lvl_up.data.ProductRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
