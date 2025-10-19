@@ -10,6 +10,7 @@ class ProductRepository(private val productDao: ProductDao) {
     // Esta es la variable que tu ViewModel observará.
     val allProducts: Flow<List<Product>> = productDao.getAllProducts()
 
+    val productCount: Flow<Int> = productDao.getProductCount()
     // 3. OPERACIONES DE ESCRITURA (Insertar)
     // Llama a la función suspend del DAO para guardar.
     suspend fun insert(product: Product) {

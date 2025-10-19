@@ -12,18 +12,39 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lvl_up.ui.theme_Admin.*
 import androidx.navigation.NavController
+import com.example.lvl_up.LvlUpApplication
+import com.example.lvl_up.viewmodel.AdminViewModel
+import com.example.lvl_up.viewmodel.AdminViewModelFactory
 
 
 @Composable
 fun AdminScreen(navController: NavController) {
+
+    val context = LocalContext.current
+    // Accede a los repositorios de la Application
+    val application = context.applicationContext as LvlUpApplication
+    val pRepo = application.productRepository
+    val uRepo = application.userRepository
+
+    // Crea la Factory con ambos repositorios
+    val factory = AdminViewModelFactory(pRepo, uRepo)
+    val viewModel: AdminViewModel = viewModel(factory = factory)
+
+    val productCount by viewModel.productCountState.collectAsState()
+    val userCount by viewModel.userCountState.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -41,6 +62,8 @@ fun AdminScreen(navController: NavController) {
 
             // --- Contenido principal (Peso se aplica aquí para ocupar el espacio restante) ---
             MainContent(
+                productCount = productCount, // 🚨 Pasar el conteo real
+                userCount = userCount,
                 modifier = Modifier
                     .weight(1f) // ⬅️ Nuevo peso para ocupar todo el espacio vertical sobrante
                     .padding(24.dp)
@@ -112,7 +135,11 @@ fun DownbarMenu(navController: NavController, modifier: Modifier = Modifier) {
 // Nota: La función MainContent ahora recibe todo el peso vertical (1f) de la Column
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier) {
+fun MainContent(
+    productCount: Int, // 🚨 Nuevo parámetro
+    userCount: Int,    // 🚨 Nuevo parámetro
+    modifier: Modifier = Modifier
+) {
     Column(modifier = modifier) {
         Text(
             text = "Bienvenido Administrador",
@@ -142,9 +169,9 @@ fun MainContent(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            WidgetCard("Productos", "125")
-            WidgetCard("Usuarios", "320")
-            WidgetCard("Pedidos", "58")
+            WidgetCard("Productos", productCount.toString())
+            WidgetCard("Usuarios", userCount.toString())
+            //WidgetCard("Pedidos", "58")
         }
     }
 }

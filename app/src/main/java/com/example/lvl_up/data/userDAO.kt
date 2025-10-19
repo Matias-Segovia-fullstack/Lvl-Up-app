@@ -19,4 +19,7 @@ interface UserDAO {
     // --- 4. Operación de Lectura: Obtener por ID (para editar) ---
     @Query("SELECT * FROM users_table WHERE id = :userId")
     suspend fun getUserById(userId: Int): User?
+
+    @Query("SELECT COUNT(id) FROM users_table")
+    fun getUserCount(): Flow<Int>
 }
