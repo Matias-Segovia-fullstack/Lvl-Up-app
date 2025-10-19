@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 // Se listan TODAS las entidades (tablas) que tendrá la DB.
 @Database(
     entities = [Product::class, User::class], // <-- ¡Ambas tablas aquí!
-    version = 1, // La versión de la base de datos
+    version = 2, // La versión de la base de datos
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -30,7 +30,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "lvl_up_db" // El nombre del archivo de la DB
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
+                    .build()
                 INSTANCE = instance
                 instance
             }

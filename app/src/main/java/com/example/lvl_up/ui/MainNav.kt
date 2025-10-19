@@ -14,7 +14,6 @@ fun MainApp() {
         composable("admin") { AdminScreen(navController) }
         composable("user") { UserScreen(navController) }
         composable("productos") { ProductScreen(navController) }
-        composable ("editProducto") { EditProducto(navController)}
         composable("crearProducto") { CreateProduct(navController)}
         composable ("crearUsuario"){ CreateUser(navController) }
         composable ("tienda"){ TiendaScreen(navController) }

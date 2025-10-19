@@ -3,14 +3,12 @@ package com.example.lvl_up.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,8 +26,7 @@ import androidx.navigation.NavController
 import com.example.lvl_up.LvlUpApplication
 import com.example.lvl_up.data.User
 import com.example.lvl_up.ui.theme_Admin.*
-import com.example.lvl_up.viewmodel.ProductViewModel
-import com.example.lvl_up.viewmodel.ProductViewModelFactory
+// Se eliminan imports de ProductViewModel y ProductViewModelFactory
 import com.example.lvl_up.viewmodel.UserViewModel
 import com.example.lvl_up.viewmodel.UserViewModelFactory
 
@@ -37,12 +34,12 @@ import com.example.lvl_up.viewmodel.UserViewModelFactory
 @Composable
 fun CreateUser(navController: NavController) {
 
+    // 1. INICIALIZACIÓN DEL VIEWMODEL Y REPOSITORIO
     val context = LocalContext.current
-    val application = context.applicationContext as LvlUpApplication
-    val repository = application.userRepository
-    val factory = UserViewModelFactory(repository)
-    val viewModel: UserViewModel = viewModel(factory = factory)
-
+    val application = context.applicationContext as LvlUpApplication //
+    val repository = application.userRepository //
+    val factory = UserViewModelFactory(repository) //
+    val viewModel: UserViewModel = viewModel(factory = factory) //
 
     Box(
         modifier = Modifier
@@ -56,27 +53,21 @@ fun CreateUser(navController: NavController) {
         // Contenedor principal para apilar el contenido y la barra inferior
         Column (modifier = Modifier
             .fillMaxSize()
-            .padding(top = 50.dp) // ⬅️ MARGEN SUPERIOR APLICADO
+            .padding(top = 50.dp)
         ) {
 
-            // 1. Contenido Principal (ocupa todo el espacio restante verticalmente)
+            // Contenido Principal (Formulario scrollable)
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-
-                // Título y Botón Volver (crear-usuario-header del HTML)
-
-                // Formulario
                 CreateUserForm(navController, viewModel)
-
-                // Espacio extra al final del scroll
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
-            // 2. Barra Inferior (SidebarMenu)
+            // Barra Inferior (Reutiliza el composable DownbarMenu de AdminScreen)
             DownbarMenu(
                 navController = navController,
                 modifier = Modifier.fillMaxWidth()
@@ -86,13 +77,22 @@ fun CreateUser(navController: NavController) {
 }
 
 
-
 @Composable
-    fun CreateUserForm(navController: NavController, viewModel: UserViewModel) {
+fun CreateUserForm(navController: NavController, viewModel: UserViewModel) {
+    // Definición de estados para los campos del formulario
+    var nombre by remember { mutableStateOf("") }
+    var rut by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var rol by remember { mutableStateOf("Cliente") }
+    var avatarUrl by remember { mutableStateOf("") }
+    val rolesList = listOf("Administrador", "Cliente")
+
+
     Column (modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 28.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        .fillMaxWidth()
+        .padding(bottom = 28.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Crear Nuevo Usuario",
@@ -104,18 +104,6 @@ fun CreateUser(navController: NavController) {
             textAlign = TextAlign.Center
         )
 
-
-        // Definición de estados para los campos del formulario
-        var nombre by remember { mutableStateOf("") }
-        var rut by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var rol by remember { mutableStateOf("Cliente") }
-        var avatarUrl by remember { mutableStateOf("") } // Simula el input type="file"
-
-        // Roles para el Dropdown
-        val rolesList = listOf("Administrador", "Cliente")
-
         Surface(
             shape = RoundedCornerShape(18.dp),
             color = FondoPanel,
@@ -124,53 +112,53 @@ fun CreateUser(navController: NavController) {
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         ) {
-            // Contenedor principal: Column para la pila vertical
             Column(
                 modifier = Modifier
                     .padding(horizontal = 30.dp, vertical = 30.dp)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(19.dp) // Espaciado vertical entre campos
+                verticalArrangement = Arrangement.spacedBy(19.dp)
             ) {
 
-                // --- 1. Nombre y Email (form-row) ---
+                // --- 1. Nombre
                 OutlinedTextField(
                     value = nombre,
                     onValueChange = { nombre = it },
                     label = { Text("Nombre completo") },
-                    modifier = Modifier.fillMaxWidth(), // ⬅️ Ocupa todo el ancho
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
+                // --- 2. RUT
                 OutlinedTextField(
                     value = rut,
                     onValueChange = { rut = it },
                     label = { Text("RUT") },
-                    modifier = Modifier.fillMaxWidth(), // ⬅️ Ocupa todo el ancho
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
-                // --- 2. Correo electrónico (STACKED) ---
+                // --- 3. Correo electrónico
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     label = { Text("Correo electrónico") },
-                    modifier = Modifier.fillMaxWidth(), // ⬅️ Ocupa todo el ancho
+                    modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
 
-                // --- 2. Contraseña y Rol (form-row) ---
+                // --- 4. Contraseña
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Contraseña") },
-                    modifier = Modifier.fillMaxWidth(), // ⬅️ Ocupa todo el ancho
+                    modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation()
                 )
 
-                // --- 4. Rol (STACKED - Eliminado de Row) ---
+                // --- 5. Rol (Dropdown)
                 var expanded by remember { mutableStateOf(false) }
                 Box(
-                    modifier = Modifier.fillMaxWidth() // ⬅️ Ocupa todo el ancho
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     OutlinedTextField(
                         value = rol,
@@ -205,7 +193,7 @@ fun CreateUser(navController: NavController) {
                     }
                 }
 
-                // --- 3. Avatar (form-group-full) ---
+                // --- 6. Avatar URL
                 OutlinedTextField(
                     value = avatarUrl,
                     onValueChange = { avatarUrl = it },
@@ -214,7 +202,7 @@ fun CreateUser(navController: NavController) {
                 )
 
 
-                // --- Botón de Acción (.btn-crear-usuario-form) ---
+                // --- Botón de Acción ---
                 Button(
                     onClick = {
                         val newUser = User(
@@ -229,7 +217,13 @@ fun CreateUser(navController: NavController) {
 
                         viewModel.insertUser(newUser)
 
-                    }, // Navegar de vuelta a la lista
+                        // ✅ Navegación de vuelta a la lista de usuarios.
+                        // Esto asegura que, si la inserción tiene éxito, vuelvas a la lista.
+                        navController.navigate("user") {
+                            popUpTo("user") { inclusive = true }
+                        }
+
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Accent,
                         contentColor = FondoPanel
