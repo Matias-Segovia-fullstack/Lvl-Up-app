@@ -4,6 +4,8 @@ package com.example.lvl_up
 import android.app.Application
 import com.example.lvl_up.data.AppDatabase
 import com.example.lvl_up.data.ProductRepository
+import com.example.lvl_up.data.UserRepository
+
 
 class LvlUpApplication : Application() {
 
@@ -13,5 +15,9 @@ class LvlUpApplication : Application() {
     // Inicialización del Repositorio de Producto
     val productRepository by lazy {
         ProductRepository(database.productDao())
+    }
+
+    val userRepository by lazy {
+        UserRepository(database.userDao())
     }
 }
