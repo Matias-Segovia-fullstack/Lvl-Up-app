@@ -102,7 +102,9 @@ fun DownbarMenu(navController: NavController, modifier: Modifier = Modifier) {
         }
 
         // El botón de Salir se puede incluir como el último elemento:
-        DownbarButton(Icons.Default.ExitToApp, "Salir", isLogout = true) { }
+        DownbarButton(Icons.Default.ExitToApp, "Salir", isLogout = true) {
+            navController.navigate("tienda")
+        }
     }
 }
 

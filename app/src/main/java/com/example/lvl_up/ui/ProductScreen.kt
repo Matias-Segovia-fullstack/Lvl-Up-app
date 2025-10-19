@@ -147,7 +147,7 @@ fun ProductRow(product: Product, navController: NavController) {
         Text(product.id.toString(),
             Modifier.weight(1.0f),
             color = TextoPrincipal,
-            fontSize = 10.sp)
+            fontSize = 14.sp)
 
         // Imagen (Placeholder que simula .producto-img)
         Column (

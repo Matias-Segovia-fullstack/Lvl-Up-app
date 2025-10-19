@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
             AdminTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "admin") {
+                NavHost(navController = navController, startDestination = "tienda") {
+                    composable ("tienda"){ TiendaScreen(navController) }
                     composable("admin") { AdminScreen(navController) }
                     composable("productos") { ProductScreen(navController) }
                     composable("user") { UserScreen(navController) }
