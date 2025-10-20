@@ -20,22 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-// Definición de colores
+
 val NeonCyan = Color(0xFF00FFFF)
 
-// -----------------------------------------------------
-// CLASE DE DATOS (Simplificada para no usar íconos)
-// -----------------------------------------------------
 data class CategoryItem(val name: String)
 
-// -----------------------------------------------------
-// PANTALLA PRINCIPAL: CategoriaScreen (CORREGIDA)
-// -----------------------------------------------------
 @Composable
 fun CategoriasScreen(navController: NavController) {
 
 
-    // 1. Definición de la lista de categorías
     val categories = listOf(
         CategoryItem("Juegos de mesa"),
         CategoryItem("Accesorios"),
@@ -46,7 +39,6 @@ fun CategoriasScreen(navController: NavController) {
         CategoryItem("Poleras y polerones personalizados")
     )
 
-    // 2. Comienzo del LazyColumn
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +46,7 @@ fun CategoriasScreen(navController: NavController) {
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título de la sección
+
         item {
             Text(
                 text = "⚡ Categorías ⚡",
@@ -66,7 +58,6 @@ fun CategoriasScreen(navController: NavController) {
             )
         }
 
-        // 3. Ítems de la lista
         items(categories) { category ->
             CategoryItemComponent(category = category, navController = navController)
             Spacer(modifier = Modifier.height(8.dp))
@@ -75,9 +66,6 @@ fun CategoriasScreen(navController: NavController) {
 }
 
 
-// -----------------------------------------------------
-// COMPONENTE ITEM INDIVIDUAL
-// -----------------------------------------------------
 @Composable
 fun CategoryItemComponent(category: CategoryItem, navController: NavController) {
     val darkBlue = Color(0xFF131722)
@@ -97,7 +85,7 @@ fun CategoryItemComponent(category: CategoryItem, navController: NavController) 
             .padding(start = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Nombre de la categoría
+
         Text(
             text = category.name,
             color = neonBorder,

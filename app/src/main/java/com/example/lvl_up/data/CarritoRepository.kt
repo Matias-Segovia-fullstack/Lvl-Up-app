@@ -24,7 +24,7 @@ class CarritoRepository(private val carritoDao: CarritoDao) {
                 name = product.name,
                 price = priceAsDouble,
                 imageUrl = product.imageUrl,
-                stock = product.stock // ✅ AÑADIR ESTA LÍNEA
+                stock = product.stock
             )
             carritoDao.insert(newItem)
         }

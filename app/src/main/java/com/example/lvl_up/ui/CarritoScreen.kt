@@ -34,8 +34,6 @@ fun CarritoScreen(navController: NavController) {
     val context = LocalContext.current
     val application = context.applicationContext as LvlUpApplication
 
-    // ✅ 1. ACTUALIZA LA CREACIÓN DE LA FACTORY
-    // Ahora le pasamos ambos repositorios.
     val factory = CarritoViewModelFactory(application.carritoRepository, application.productRepository)
     val viewModel: CarritoViewModel = viewModel(factory = factory)
 
@@ -150,7 +148,6 @@ fun FilaProductoCarrito(
                 }
                 Text("${item.cantidad}", color = Color.White, fontWeight = FontWeight.Bold)
 
-                // ✅ 3. LÓGICA PARA LIMITAR POR STOCK
                 IconButton(
                     onClick = { onQuantityChange(1) },
                     enabled = item.cantidad < item.stock

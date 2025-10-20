@@ -33,7 +33,6 @@ import com.example.lvl_up.viewmodel.UserViewModel
 import com.example.lvl_up.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.launch
 
-// --- Funciones de Validación (Reutilizadas de CreateUser.kt) ---
 private fun validateRutFormat(rut: String): Boolean {
     val rutRegex = Regex("^(\\d{1,2}\\.)?\\d{3}\\.\\d{3}-[0-9kK]$")
     return rutRegex.matches(rut)
@@ -42,7 +41,7 @@ private fun validateRutFormat(rut: String): Boolean {
 private fun validateNombreFormat(nombre: String): Boolean {
     if (nombre.length > 40) return false
     val words = nombre.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
-    return words.size >= 2 // Acepta nombre y al menos un apellido
+    return words.size >= 2
 }
 
 private fun validatePassword(password: String): Boolean {
@@ -207,7 +206,6 @@ fun RegistroForm(navController: NavController, viewModel: UserViewModel) {
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    // 1. Validación de formato
                     nombreError = if (!validateNombreFormat(nombre)) "Nombre y apellido son requeridos." else null
                     rutError = if (!validateRutFormat(rut)) "RUT con formato incorrecto o vacío." else null
                     emailError = if (!validateEmailFormat(email)) "Correo con formato o dominio no válido." else null
@@ -216,7 +214,6 @@ fun RegistroForm(navController: NavController, viewModel: UserViewModel) {
                     val hasFormatError = listOf(nombreError, rutError, emailError, passwordError).any { it != null }
 
                     if (!hasFormatError) {
-                        // 2. Si el formato es correcto, validamos duplicados en la BD
                         scope.launch {
                             val isRutDuplicate = viewModel.isRutTaken(rut.trim())
                             if (isRutDuplicate) {
@@ -228,7 +225,6 @@ fun RegistroForm(navController: NavController, viewModel: UserViewModel) {
                                 emailError = "Este correo ya está en uso."
                             }
 
-                            // 3. Si no hay duplicados, procedemos a registrar
                             if (!isRutDuplicate && !isEmailDuplicate) {
                                 val newUser = User(
                                     nombre = nombre.trim(),

@@ -20,22 +20,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.lvl_up.ui.theme_Admin.* import com.example.lvl_up.data.Product
-// 🛑 Ya no necesitamos sampleProducts aquí
-import androidx.compose.runtime.collectAsState // ✅ Importado
-import androidx.compose.ui.platform.LocalContext // ✅ Importado
+import com.example.lvl_up.ui.theme_Admin.*
+import com.example.lvl_up.data.Product
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.lvl_up.LvlUpApplication // ✅ Importado
-import com.example.lvl_up.viewmodel.ProductViewModel // ✅ Importado
-import com.example.lvl_up.viewmodel.ProductViewModelFactory // ✅ Importado
-import androidx.compose.material3.Text // Asegurando importaciones
-import androidx.compose.runtime.getValue // Necesario para 'by' en collectAsState()
+import com.example.lvl_up.LvlUpApplication
+import com.example.lvl_up.viewmodel.ProductViewModel
+import com.example.lvl_up.viewmodel.ProductViewModelFactory
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
 
 
 @Composable
 fun ProductScreen(navController: NavController) {
 
-    // 🛑 1. CONEXIÓN AL VIEWMODEL USANDO LA FÁBRICA
     val context = LocalContext.current
     val application = context.applicationContext as LvlUpApplication
     val repository = application.productRepository
@@ -43,11 +42,8 @@ fun ProductScreen(navController: NavController) {
 
     val viewModel: ProductViewModel = viewModel(factory = factory)
 
-    // 🛑 2. Observar la lista dinámica de productos de la DB
-    // Reemplaza la antigua lista estática
     val products by viewModel.productListState.collectAsState()
 
-    // 🛑 3. ELIMINA la línea: val products = sampleProducts
 
     Box(
         modifier = Modifier
@@ -63,7 +59,7 @@ fun ProductScreen(navController: NavController) {
             .padding(top = 50.dp)
         ) {
             ProductListContent(
-                products = products, // ✅ Ahora usa la lista dinámica
+                products = products,
                 navController = navController,
                 modifier = Modifier
                     .weight(1f)
@@ -75,8 +71,6 @@ fun ProductScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Aquí puedes añadir temporalmente el botón de prueba si lo deseas:
-            // TestProductInsertButton(viewModel = viewModel)
         }
     }
 }
@@ -105,8 +99,8 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
                     navController.navigate("crearProducto")
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Accent, // background: #03ffe2
-                    contentColor = FondoPanel // color: #23293e
+                    containerColor = Accent,
+                    contentColor = FondoPanel
                 ),
                 shape = RoundedCornerShape(7.dp),
                 modifier = Modifier.height(40.dp)
@@ -117,21 +111,21 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
             }
         }
 
-        // --- Tabla de productos ---
+
         Surface(
-            shape = RoundedCornerShape(15.dp), // border-radius: 15px
-            color = FondoPanel, // background: #23293e
+            shape = RoundedCornerShape(15.dp),
+            color = FondoPanel,
             shadowElevation = 4.dp,
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(modifier = Modifier.padding(24.dp)) {
-                // Encabetabla (th)
+
                 item { ProductTableHeader() }
 
-                // Filas de los productos (tr)
+
                 items(products) { product ->
                     ProductRow(product, navController)
-                    // Separador de fila (simulando el border-bottom)
+
                     Divider(color = TextoSecundario.copy(alpha = 0.3f), thickness = 1.dp)
                 }
             }
@@ -139,14 +133,14 @@ fun ProductListContent(products: List<Product>, navController: NavController, mo
     }
 }
 
-// ----------------------------------------------------------------------------------
+
 
 @Composable
 fun ProductTableHeader() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(FondoDark, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)) // background: #181c25
+            .background(FondoDark, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
             .padding(vertical = 14.dp),
     ) {
         Text("Productos",
@@ -157,7 +151,7 @@ fun ProductTableHeader() {
         }
 }
 
-// ----------------------------------------------------------------------------------
+
 
 @Composable
 fun ProductRow(product: Product, navController: NavController) {
@@ -167,13 +161,11 @@ fun ProductRow(product: Product, navController: NavController) {
             .padding(vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // ID
         Text(product.id.toString(),
             Modifier.weight(1.0f),
             color = TextoPrincipal,
             fontSize = 14.sp)
 
-        // Imagen (Placeholder que simula .producto-img)
         Column (
             modifier = Modifier
                 .weight(4.5f)
@@ -236,5 +228,3 @@ fun ProductRow(product: Product, navController: NavController) {
 
     }
 }
-
-//este es un comentario

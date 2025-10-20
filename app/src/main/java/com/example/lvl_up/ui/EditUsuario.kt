@@ -35,13 +35,12 @@ import com.example.lvl_up.viewmodel.UserViewModel
 import com.example.lvl_up.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.launch
 
-// Reutilizamos la función de validación de contraseña de CreateUser
 private fun validatePassword(password: String): Boolean {
     return password.length >= 8
 }
 
 @Composable
-fun EditUser(navController: NavController, userId: Int) { // ⬅️ Recibe el ID del usuario
+fun EditUser(navController: NavController, userId: Int) {
 
     val context = LocalContext.current
     val application = context.applicationContext as LvlUpApplication
@@ -70,12 +69,11 @@ fun EditUser(navController: NavController, userId: Int) { // ⬅️ Recibe el ID
                     .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                EditUserForm(navController, viewModel, userId) // ⬅️ Pasa el ID
+                EditUserForm(navController, viewModel, userId)
 
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
-            // Asumo que DownbarMenu es tu barra de navegación inferior
             DownbarMenu(
                 navController = navController,
                 modifier = Modifier.fillMaxWidth()
@@ -87,14 +85,12 @@ fun EditUser(navController: NavController, userId: Int) { // ⬅️ Recibe el ID
 
 @Composable
 fun EditUserForm(navController: NavController, viewModel: UserViewModel, userId: Int) {
-    // 1. Estados para el usuario original y los campos editables
     var originalUser by remember { mutableStateOf<User?>(null) }
     var nombre by remember { mutableStateOf("Cargando...") }
     var correo by remember { mutableStateOf("Cargando...") }
     var password by remember { mutableStateOf("") }
     var rol by remember { mutableStateOf("Cliente") }
 
-    // 2. Estados para errores
     var passwordError by remember { mutableStateOf<String?>(null) }
 
     val focusManager = LocalFocusManager.current
@@ -102,7 +98,6 @@ fun EditUserForm(navController: NavController, viewModel: UserViewModel, userId:
     val scope = rememberCoroutineScope()
     val rolesList = listOf("Administrador", "Cliente")
 
-    // 3. Cargar datos del usuario al iniciar el componente
     LaunchedEffect(userId) {
         scope.launch {
             val user = viewModel.getUserForEdit(userId)
@@ -110,8 +105,6 @@ fun EditUserForm(navController: NavController, viewModel: UserViewModel, userId:
             user?.let {
                 nombre = it.nombre
                 correo = it.correo
-                // NOTA: No cargamos la contraseña original en 'password' por seguridad/diseño
-                // Si el usuario deja el campo vacío, se usará la contraseña original.
                 rol = it.rol
             } ?: run {
                 nombre = "Usuario no encontrado"
@@ -148,11 +141,10 @@ fun EditUserForm(navController: NavController, viewModel: UserViewModel, userId:
                 modifier = Modifier
                     .padding(horizontal = 30.dp, vertical = 30.dp)
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.Start, // Alineamos a la izquierda para los datos de usuario
+                horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(19.dp)
             ) {
 
-                // --- 1. Información de Usuario (Nombre y Correo - NO EDITABLES) ---
                 Text(
                     text = "Nombre:",
                     color = Accent,
@@ -177,7 +169,6 @@ fun EditUserForm(navController: NavController, viewModel: UserViewModel, userId:
                 Divider(modifier = Modifier.padding(vertical = 10.dp), color = Accent.copy(alpha = 0.5f))
 
 
-                // --- 2. Rol (Dropdown) - EDITABLE ---
                 var expanded by remember { mutableStateOf(false) }
                 Box(
                     modifier = Modifier.fillMaxWidth()
@@ -215,12 +206,10 @@ fun EditUserForm(navController: NavController, viewModel: UserViewModel, userId:
                     }
                 }
 
-                // --- 3. Contraseña (EDITABLE) ---
                 OutlinedTextField(
                     value = password,
                     onValueChange = { newValue ->
                         password = newValue
-                        // Solo valida si el campo NO está vacío (si está vacío, se asume la original)
                         passwordError = if (password.isNotEmpty() && !validatePassword(password)) {
                             "Mínimo 8 caracteres."
                         } else null
@@ -251,21 +240,19 @@ fun EditUserForm(navController: NavController, viewModel: UserViewModel, userId:
 
                         if (!hasError && originalUser != null) {
                             val newPassword = if (password.isEmpty()) {
-                                originalUser!!.contrasena // Mantiene la contraseña original si el campo está vacío
+                                originalUser!!.contrasena
                             } else {
-                                password // Usa la nueva contraseña validada
+                                password
                             }
 
                             val updatedUser = originalUser!!.copy(
                                 contrasena = newPassword,
                                 rol = rol
-                                // Los demás campos (nombre, rut, correo, etc.) se mantienen igual
+
                             )
 
-                            // 4. Llamada para actualizar el usuario
                             viewModel.updateUser(updatedUser)
 
-                            // 5. Navegación
                             navController.popBackStack()
                         }
                     },
