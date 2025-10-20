@@ -13,7 +13,8 @@ import com.example.lvl_up.RetroGamesScreen
 fun MainNav() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "tienda") {
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") { LoginScreen(navController) }
         composable("admin") { AdminScreen(navController) }
         composable("user") { UserScreen(navController) }
         composable("productos") { ProductScreen(navController) }
@@ -22,6 +23,7 @@ fun MainNav() {
         composable ("tienda"){ TiendaScreen(navController) }
         composable("retroGamesDetail") { RetroGamesScreen(navController) }
         composable("pcGamerGuide") { PCGamerGuideScreen(navController) }
+        composable("registro") { RegistroScreen(navController) }
 
         composable(
             route = "edit_product/{productId}",
