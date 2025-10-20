@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation)
     implementation("androidx.room:room-ktx:2.8.2")
+    implementation(libs.androidx.compose.ui.text)
     kapt("androidx.room:room-compiler:2.8.2")
 
 

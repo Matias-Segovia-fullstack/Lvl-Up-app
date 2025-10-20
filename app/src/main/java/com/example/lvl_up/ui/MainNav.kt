@@ -12,7 +12,8 @@ import com.example.lvl_up.TiendaScreen
 fun MainNav() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "tienda") {
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") { LoginScreen(navController) }
         composable("admin") { AdminScreen(navController) }
         composable("user") { UserScreen(navController) }
         composable("productos") { ProductScreen(navController) }
