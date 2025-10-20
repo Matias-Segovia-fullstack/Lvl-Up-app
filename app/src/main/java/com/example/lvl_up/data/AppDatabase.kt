@@ -10,14 +10,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [Product::class, User::class],
-    version = 3,
+    entities = [Product::class, User::class, ItemCarrito::class],
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun productDao(): ProductDao
     abstract fun userDao(): UserDAO
+
+    abstract fun carritoDao(): CarritoDao
 
 
     companion object {

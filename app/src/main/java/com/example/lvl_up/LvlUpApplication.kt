@@ -5,6 +5,8 @@ import android.app.Application
 import com.example.lvl_up.data.AppDatabase
 import com.example.lvl_up.data.ProductRepository
 import com.example.lvl_up.data.UserRepository
+import com.example.lvl_up.data.CarritoRepository
+
 
 
 class LvlUpApplication : Application() {
@@ -19,5 +21,9 @@ class LvlUpApplication : Application() {
 
     val userRepository by lazy {
         UserRepository(database.userDao())
+    }
+
+    val carritoRepository by lazy {
+        CarritoRepository(database.carritoDao())
     }
 }
