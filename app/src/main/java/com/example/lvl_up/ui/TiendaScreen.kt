@@ -115,7 +115,7 @@ fun Navbar(navController: NavController) {
         // Botón de Login
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
             Button(
-                onClick = { /* Acción de login */ },
+                onClick = { navController.navigate("login") },
                 colors = ButtonDefaults.buttonColors(containerColor = DarkButton),
                 shape = MaterialTheme.shapes.small, // Usa la forma de Shape.kt
                 modifier = Modifier.height(38.dp)
@@ -179,7 +179,7 @@ fun CultureBanner() {
 @Composable
 fun CartButton(navController: NavController) {
     Button(
-        onClick = { navController.navigate("admin") },
+        onClick = { navController.navigate("carrito") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
