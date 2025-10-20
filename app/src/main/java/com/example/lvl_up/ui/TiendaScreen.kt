@@ -34,10 +34,11 @@ import com.example.lvl_up.ui.theme_Tienda.*
 
 
 // =================================================================
-// CLASES DE DATOS (MANTENIDAS AQUÍ YA QUE NO SE REQUIERE UN ARCHIVO DEDICADO)
+// CLASES DE DATOS (CORREGIDAS)
 // =================================================================
-data class OfferItem(val imageUrl: String, val title: String, val description: String, val price: String, val oldPrice: String)
-data class NewsItem(val title: String, val summary: String, val imageUrl: String)
+data class OfferItem(val imageResId: Int, val title: String, val description: String, val price: String, val oldPrice: String)
+// ✅ CORRECCIÓN 1: NewsItem ahora usa Int para el recurso de imagen (imageResId)
+data class NewsItem(val title: String, val summary: String, val imageResId: Int)
 
 
 // =================================================================
@@ -195,12 +196,15 @@ fun CartButton(navController: NavController) {
 
 @Composable
 fun OffersSection() {
+
+
     val offerItems = listOf(
-        OfferItem("url1", "Auriculares HyperX Cloud II", "Sonido envolvente y máxima comodidad", "$69.990", "$79.990"),
-        OfferItem("url2", "PC Gamer Elite", "Intel Core i7 + 32GB RAM tarjeta 4090", "$779.990", "$899.990"),
-        OfferItem("url3", "Control Xbox Series X", "Control Xbox Series X Inalámbrico edición Doom Eternal", "$54.990", "$59.990"),
-        OfferItem("url4", "Mouse Gamer Logitech G502 HERO", "Mouse Gamer Logitech G502 HERO", "$39.990", "$49.990")
+        OfferItem(imageResId = R.drawable.audifonos, title = "Auriculares HyperX Cloud II", description = "sonido envolvente y máxima comodidad", price = "$69.990", oldPrice = "$79.990"),
+        OfferItem(imageResId = R.drawable.pcgamer, title = "PC Gamer Elite", description = "Intel Core i7 + 32GB RAM tarjeta 4090", price = "$779.990", oldPrice = "$899.990"),
+        OfferItem(imageResId = R.drawable.controldoom, title = "Control Xbox Series X", description = "Control Xbox Series X Inalámbrico edición Doom Eternal", price = "$54.990", oldPrice = "$59.990"),
+        OfferItem(imageResId = R.drawable.mousee, title = "Mouse Gamer Logitech G502 HERO", description = "Mouse Gamer Logitech G502 HERO", price = "$39.990", oldPrice = "$49.990")
     )
+
 
     Column(
         modifier = Modifier
@@ -250,7 +254,8 @@ fun ProductCard(item: OfferItem) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             // Placeholder para la imagen del producto
             Image(
-                painter = painterResource(id = R.drawable.placeholder_product),
+
+                painter = painterResource(id = item.imageResId),
                 contentDescription = item.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -346,11 +351,16 @@ fun CatalogBanner(navController: NavController) {
     }
 }
 
+// =================================================================
+// COMPONENTES DE NOTICIAS (CORREGIDOS)
+// =================================================================
+
 @Composable
 fun NewsSection() {
+    // ✅ CORRECCIÓN 2: Se usan las referencias R.drawable en lugar de "urlX"
     val newsItems = listOf(
-        NewsItem("🎮 Top 5 Mejores Juegos Retro de PC", "Revive la nostalgia gamer con estos clásicos inolvidables...", "url1"),
-        NewsItem("💻 Guía para Elegir tu PC Gamer Ideal", "¿Estás pensando en comprar una computadora gamer? Aquí tienes algunos consejos clave...", "url2")
+        NewsItem("🎮 Top 5 Mejores Juegos Retro de PC", "Revive la nostalgia gamer con estos clásicos inolvidables...", R.drawable.age),
+        NewsItem("💻 Guía para Elegir tu PC Gamer Ideal", "¿Estás pensando en comprar una computadora gamer? Aquí tienes algunos consejos clave...", R.drawable.pcbuild)
     )
 
     Column(modifier = Modifier.padding(horizontal = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -381,9 +391,9 @@ fun NewsCard(item: NewsItem, modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column {
-            // Placeholder para la imagen de noticias
+            // ✅ CORRECCIÓN 3: Se usa item.imageResId para cargar la imagen correcta de la noticia
             Image(
-                painter = painterResource(id = R.drawable.placeholder_news),
+                painter = painterResource(id = item.imageResId),
                 contentDescription = item.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -439,7 +449,7 @@ fun Footer() {
             Column(Modifier.fillMaxWidth()) {
                 Text("Contáctanos", color = NeonCyan, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
                 Text("soporte@mitiendagamer.com", color = MutedText, fontSize = 14.sp)
-                Text("+56 9 9999 9999", color = MutedText, fontSize = 14.sp)
+                Text("+56 9 7265 9317", color = MutedText, fontSize = 14.sp)
                 Text("Santiago, Chile", color = MutedText, fontSize = 14.sp)
             }
         }
