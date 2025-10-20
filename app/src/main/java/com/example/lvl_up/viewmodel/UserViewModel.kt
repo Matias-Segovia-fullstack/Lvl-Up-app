@@ -34,4 +34,8 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
     suspend fun getUserForEdit(id: Int): User? {
         return repository.getUserById(id)
     }
+
+    suspend fun loginUser(email: String, password: String): User? {
+        return repository.findUserByCredentials(email, password)
+    }
 }

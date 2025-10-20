@@ -4,22 +4,22 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-// 1. ANOTACIÓN @Database
-// Se listan TODAS las entidades (tablas) que tendrá la DB.
 @Database(
-    entities = [Product::class, User::class], // <-- ¡Ambas tablas aquí!
-    version = 2, // La versión de la base de datos
+    entities = [Product::class, User::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    // 2. EXPOSICIÓN DE DAOs
-    // Se expone un método abstracto para CADA DAO.
-    abstract fun productDao(): ProductDao // Para las operaciones de Product
-    abstract fun userDao(): UserDAO     // Para las operaciones de User
+    abstract fun productDao(): ProductDao
+    abstract fun userDao(): UserDAO
 
-    // 3. SINGLETON PATTERN (Para una única instancia)
+
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -32,7 +32,34 @@ abstract class AppDatabase : RoomDatabase() {
                     "lvl_up_db" // El nombre del archivo de la DB
                 )
                     .fallbackToDestructiveMigration()
-                    .allowMainThreadQueries()
+                    .addCallback(object : RoomDatabase.Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val userDao = getDatabase(context).userDao()
+                                // Creamos y guardamos el usuario Administrador
+                                val adminUser = User(
+                                    nombre = "Admin Duoc",
+                                    rut = "12.345.678-9",
+                                    correo = "admin@duocuc.cl",
+                                    contrasena = "admin123",
+                                    rol = "Administrador",
+                                    avatarUrl = "urlAdmin"
+                                )
+                                userDao.insertUser(adminUser)
+                                // Creamos y guardamos el usuario Cliente
+                                val clientUser = User(
+                                    nombre = "Cliente Gmail",
+                                    rut = "98.765.432-1",
+                                    correo = "cliente@gmail.com",
+                                    contrasena = "cliente123",
+                                    rol = "Cliente",
+                                    avatarUrl = "urlCliente"
+                                )
+                                userDao.insertUser(clientUser)
+                            }
+                        }
+                    })
                     .build()
                 INSTANCE = instance
                 instance
