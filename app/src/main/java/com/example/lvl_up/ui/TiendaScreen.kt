@@ -37,7 +37,6 @@ import com.example.lvl_up.ui.theme_Tienda.*
 // CLASES DE DATOS (CORREGIDAS)
 // =================================================================
 data class OfferItem(val imageResId: Int, val title: String, val description: String, val price: String, val oldPrice: String)
-// ✅ CORRECCIÓN 1: NewsItem ahora usa Int para el recurso de imagen (imageResId)
 data class NewsItem(val title: String, val summary: String, val imageResId: Int)
 
 
@@ -68,7 +67,8 @@ fun TiendaScreen(navController: NavController) {
             item { Spacer(modifier = Modifier.height(24.dp)) }
             item { CatalogBanner(navController) }
             item { Spacer(modifier = Modifier.height(24.dp)) }
-            item { NewsSection() }
+            // ✅ MODIFICACIÓN 1: Pasar navController a NewsSection
+            item { NewsSection(navController) }
             item { Spacer(modifier = Modifier.height(24.dp)) }
             item { Footer() }
         }
@@ -352,12 +352,12 @@ fun CatalogBanner(navController: NavController) {
 }
 
 // =================================================================
-// COMPONENTES DE NOTICIAS (CORREGIDOS)
+// COMPONENTES DE NOTICIAS (MODIFICADOS PARA NAVEGACIÓN)
 // =================================================================
 
 @Composable
-fun NewsSection() {
-    // ✅ CORRECCIÓN 2: Se usan las referencias R.drawable en lugar de "urlX"
+// ✅ MODIFICACIÓN 2: Recibe navController
+fun NewsSection(navController: NavController) {
     val newsItems = listOf(
         NewsItem("🎮 Top 5 Mejores Juegos Retro de PC", "Revive la nostalgia gamer con estos clásicos inolvidables...", R.drawable.age),
         NewsItem("💻 Guía para Elegir tu PC Gamer Ideal", "¿Estás pensando en comprar una computadora gamer? Aquí tienes algunos consejos clave...", R.drawable.pcbuild)
@@ -376,14 +376,16 @@ fun NewsSection() {
 
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             newsItems.forEach { item ->
-                NewsCard(item, Modifier.weight(1f))
+                // ✅ MODIFICACIÓN 3: Pasa navController a NewsCard
+                NewsCard(item, Modifier.weight(1f), navController)
             }
         }
     }
 }
 
 @Composable
-fun NewsCard(item: NewsItem, modifier: Modifier = Modifier) {
+// ✅ MODIFICACIÓN 4: Recibe navController
+fun NewsCard(item: NewsItem, modifier: Modifier = Modifier, navController: NavController) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
@@ -391,7 +393,7 @@ fun NewsCard(item: NewsItem, modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column {
-            // ✅ CORRECCIÓN 3: Se usa item.imageResId para cargar la imagen correcta de la noticia
+            // Placeholder para la imagen de noticias
             Image(
                 painter = painterResource(id = item.imageResId),
                 contentDescription = item.title,
@@ -404,17 +406,29 @@ fun NewsCard(item: NewsItem, modifier: Modifier = Modifier) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(item.title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp))
                 Text(item.summary, color = MutedText, fontSize = 14.sp, modifier = Modifier.padding(bottom = 8.dp))
+                // Dentro de la función NewsCard en TiendaScreen.kt:
+
                 Button(
-                    onClick = { /* Acción Ver más */ },
+                    onClick = {
+                        // LÓGICA DE NAVEGACIÓN MEJORADA
+                        if (item.title.contains("Top 5 Mejores Juegos Retro de PC")) {
+                            // Si es la noticia Retro, navega a su detalle
+                            navController.navigate("retroGamesDetail")
+                        } else if (item.title.contains("Guía para Elegir tu PC Gamer Ideal")) {
+                            // ✅ Si es la noticia de la Guía, navega a su detalle
+                            navController.navigate("pcGamerGuide")
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = NeonCyan),
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text("Leer más", color = DarkButton)
                 }
+                }
             }
         }
     }
-}
+
 
 @Composable
 fun Footer() {
