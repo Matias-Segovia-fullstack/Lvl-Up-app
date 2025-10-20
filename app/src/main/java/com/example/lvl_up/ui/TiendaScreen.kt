@@ -28,6 +28,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lvl_up.data.UserManager
 import androidx.navigation.NavController
 import com.example.lvl_up.ui.theme_Tienda.*
 
@@ -81,48 +82,73 @@ fun TiendaScreen(navController: NavController) {
 
 @Composable
 fun Navbar(navController: NavController) {
-    Row(
+    // El contenedor principal es una Columna para apilar las dos filas
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(NavbarDark) // Usa el color del navbar
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .background(NavbarDark)
+            .padding(start = 16.dp, end = 16.dp, top = 40.dp, bottom = 8.dp), // Ajustamos el padding
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título con acentos de color
-        Text(
-            text = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = Color.Red)) { append("⚡") }
-                append("Mi Tienda ")
-                withStyle(style = SpanStyle(color = NeonCyan)) { append("PC gamer") }
-            },
-            color = Color.White,
-            style = MaterialTheme.typography.headlineMedium, // Usando un estilo de Type.kt
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(top = 40.dp)
-        )
+        // --- Fila Superior: Título y Logo ---
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Título con acentos de color
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = Color.Red)) { append("⚡") }
+                    append("Mi Tienda ")
+                    withStyle(style = SpanStyle(color = NeonCyan)) { append("PC gamer") }
+                },
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium,
+            )
 
-        Spacer(modifier = Modifier.weight(1f))
+            // Simulación de Logo
+            Image(
+                painter = painterResource(id = R.drawable.pixel),
+                contentDescription = "Logo",
+                modifier = Modifier.size(70.dp)
+            )
+        }
 
-        // Simulación de Logo
-        Image(
-            painter = painterResource(id = R.drawable.pixel),
-            contentDescription = "Logo",
-            modifier = Modifier.size(70.dp).offset(x = (-30).dp)
-        )
+        // Espacio vertical entre la fila superior y la inferior
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón de Login
-        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
-            Button(
-                onClick = { navController.navigate("login") },
-                colors = ButtonDefaults.buttonColors(containerColor = DarkButton),
-                shape = MaterialTheme.shapes.small, // Usa la forma de Shape.kt
-                modifier = Modifier.height(38.dp)
-            ) {
-                // Usar un ícono genérico para simular bi-person
-                Icon(painter = painterResource(id = R.drawable.ic_person), contentDescription = "Login", tint = Color.White)
-                Text("Login", color = Color.White)
+        // --- Fila Inferior: Información de Usuario / Login ---
+        // Usamos un Box para alinear su contenido a la derecha
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            // Revisa si hay un usuario con sesión iniciada
+            Column(horizontalAlignment = Alignment.End) {
+                Row {
+                    Text(
+                        text = UserManager.currentUserName ?: "Usuario",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = UserManager.currentUserEmail ?: "email@example.com",
+                        color = MutedText,
+                        fontSize = 12.sp
+                    )
+                }
+
+                TextButton(
+                    onClick = {
+                        UserManager.logout()
+                        navController.navigate("login") {
+                            popUpTo(0)
+                        }
+                    }
+                ) {
+                    Text("Salir", color = RedAccent, textDecoration = TextDecoration.Underline)
+                }
             }
         }
     }
