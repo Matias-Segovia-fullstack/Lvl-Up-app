@@ -7,20 +7,24 @@ class CarritoRepository(private val carritoDao: CarritoDao) {
 
     fun getCartItems(userId: Int): Flow<List<ItemCarrito>> = carritoDao.getCartItems(userId)
 
-    suspend fun addToCart(product: Product, userId: Int) {
-        val existingItem = carritoDao.findItemInCart(userId, product.id)
-        if (existingItem != null) {
+    suspend fun addToCart(product: Product, userId: Int, quantity: Int = 1) {
+        if (quantity <= 0) return
 
-            val updatedItem = existingItem.copy(cantidad = existingItem.cantidad + 1)
+        val existingItem = carritoDao.findItemInCart(userId, product.id)
+        val priceAsDouble = product.price.replace(".", "").toDoubleOrNull() ?: 0.0
+
+        if (existingItem != null) {
+            val updatedItem = existingItem.copy(cantidad = existingItem.cantidad + quantity)
             carritoDao.update(updatedItem)
         } else {
             val newItem = ItemCarrito(
                 productId = product.id,
                 userId = userId,
-                cantidad = 1,
+                cantidad = quantity,
                 name = product.name,
-                price = product.price.toDoubleOrNull() ?: 0.0,
-                imageUrl = product.imageUrl
+                price = priceAsDouble,
+                imageUrl = product.imageUrl,
+                stock = product.stock // ✅ AÑADIR ESTA LÍNEA
             )
             carritoDao.insert(newItem)
         }

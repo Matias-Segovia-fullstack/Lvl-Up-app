@@ -116,7 +116,7 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
         val focusManager = LocalFocusManager.current
         val (nombreFocus, precioFocus, stockFocus, descripcionFocus, urlFocus) = FocusRequester.createRefs()
 
-        val categoriasList = listOf("Juegos de mesa", "Accesorios", "Consolas", "Computadoras gamers", "Sillas gamers", "Mousepads", "Poleras y polerones personalizados")
+        val categoriasList = listOf("Juegos de mesa", "Accesorios", "Consolas", "Computadoras gamers", "Sillas gamer", "Mousepads", "Poleras y polerones personalizados")
 
         Surface(
             shape = RoundedCornerShape(18.dp),
