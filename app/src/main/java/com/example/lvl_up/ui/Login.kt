@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.lvl_up.data.UserManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
@@ -146,6 +147,7 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                     scope.launch {
                         val user = viewModel.loginUser(email.trim(), password.trim())
                         if (user != null) {
+                            UserManager.currentUserId = user.id
                             val destination = if (user.rol.equals("Administrador", ignoreCase = true)) {
                                 "admin"
                             } else {
@@ -177,4 +179,3 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
         }
     }
 }
-
