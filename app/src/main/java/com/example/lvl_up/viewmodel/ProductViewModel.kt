@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lvl_up.data.Product
 import com.example.lvl_up.data.ProductRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -43,5 +44,9 @@ class ProductViewModel(private val repository: ProductRepository) : ViewModel() 
     suspend fun getProductForEdit(id: Int): Product? {
         // La función es 'suspend' porque la llamada al Repositorio (y al DAO) es asíncrona.
         return repository.getProductById(id)
+    }
+
+    fun getProductsByCategory(category: String): Flow<List<Product>> {
+        return repository.getProductsByCategory(category)
     }
 }
