@@ -201,6 +201,12 @@ fun ProductRow(product: Product, navController: NavController) {
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center)
 
+            Text(product.category,
+                modifier = Modifier.fillMaxWidth(),
+                color = TextoPrincipal,
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center)
+
             Text("Stock: ${product.stock}",
                 modifier = Modifier.fillMaxWidth(),
                 color = TextoPrincipal,
