@@ -36,12 +36,10 @@ import com.example.lvl_up.viewmodel.ProductViewModelFactory
 import kotlinx.coroutines.launch
 
 @Composable
-fun EditProduct(navController: NavController, productId: Int) { // ⬅️ Recibe el ID del producto
-
+fun EditProduct(navController: NavController, productId: Int) {
     val context = LocalContext.current
     val application = context.applicationContext as LvlUpApplication
     val repository = application.productRepository
-    // Asume que tienes un ProductViewModelFactory
     val factory = ProductViewModelFactory(repository)
     val viewModel: ProductViewModel = viewModel(factory = factory)
 
