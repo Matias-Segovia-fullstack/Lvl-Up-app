@@ -20,6 +20,7 @@ fun MainNav() {
         composable("crearProducto") { CreateProduct(navController)}
         composable ("crearUsuario"){ CreateUser(navController) }
         composable ("tienda"){ TiendaScreen(navController) }
+        composable("registro") { RegistroScreen(navController) }
 
         composable(
             route = "edit_product/{productId}",

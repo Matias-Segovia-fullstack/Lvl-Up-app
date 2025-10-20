@@ -167,7 +167,7 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
             }
 
             OutlinedButton(
-                onClick = { /* TODO: Navegar a la pantalla de registro */ },
+                onClick = { navController.navigate("registro") },
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(1.dp, NeonCyan),
                 modifier = Modifier.fillMaxWidth().height(50.dp)
