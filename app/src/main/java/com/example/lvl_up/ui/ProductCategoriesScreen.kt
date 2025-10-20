@@ -64,7 +64,7 @@ fun ProductCategoriesScreen(navController: NavController, category: String?) {
             )
             LazyColumn {
                 items(products) { product ->
-                    ProductCategoryRow(product, navController) // ✅ Usando el nuevo Composable
+                    ProductCategoryRow(product, navController)
                 }
             }
         }
@@ -79,7 +79,6 @@ fun ProductCategoryRow(product: Product, navController: NavController) {
             .padding(vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // ID
         Text(
             product.id.toString(),
             Modifier.weight(1.0f),
@@ -87,14 +86,12 @@ fun ProductCategoryRow(product: Product, navController: NavController) {
             fontSize = 14.sp
         )
 
-        // Columna de detalles del producto
         Column(
             modifier = Modifier
                 .weight(4.5f)
                 .padding(start = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Imagen (Placeholder)
             Box(
                 modifier = Modifier
                     .size(130.dp)
@@ -111,7 +108,6 @@ fun ProductCategoryRow(product: Product, navController: NavController) {
             }
             Spacer(Modifier.height(7.dp))
 
-            // Nombre (sin stock ni categoría)
             Text(
                 product.name,
                 modifier = Modifier.fillMaxWidth(),
@@ -122,10 +118,8 @@ fun ProductCategoryRow(product: Product, navController: NavController) {
 
             Spacer(Modifier.height(10.dp))
 
-            // Botón "Ver producto"
             Button(
                 onClick = {
-                    // Navega a una futura pantalla de detalles del producto
                     navController.navigate("product_detail/${product.id}")
                 },
                 colors = ButtonDefaults.buttonColors(

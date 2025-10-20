@@ -40,8 +40,7 @@ fun UserScreen(navController: NavController) {
 
     val viewModel: UserViewModel = viewModel(factory = factory)
 
-    // 🛑 2. Observar la lista dinámica de productos de la DB
-    // Reemplaza la antigua lista estática
+
     val users by viewModel.userListState.collectAsState()
 
     Box(
@@ -49,7 +48,7 @@ fun UserScreen(navController: NavController) {
             .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
-                    listOf(FondoGradientStart, FondoGradientEnd) // Mapeo a body background
+                    listOf(FondoGradientStart, FondoGradientEnd)
                 )
             )
     ) {
@@ -57,7 +56,6 @@ fun UserScreen(navController: NavController) {
             .fillMaxSize()
             .padding(top = 50.dp)
         ) {
-            // Reutilizamos el SidebarMenu de AdminScreen.kt
 
             UserListContent(
                 users = users,
@@ -75,7 +73,6 @@ fun UserScreen(navController: NavController) {
     }
 }
 
-// ----------------------------------------------------------------------------------
 
 @Composable
 fun UserListContent(users: List<User>, navController: NavController, modifier: Modifier = Modifier) {
@@ -87,7 +84,7 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Usuarios", // Title: "Usuarios"
+                text = "Usuarios",
                 fontSize = 40.sp,
                 color = Accent,
                 fontWeight = FontWeight.SemiBold,
@@ -97,10 +94,10 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
             Button(
                 onClick = {
                     navController.navigate("crearUsuario")
-                          }, // Button to create user
+                          },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Accent, // background: #03ffe2
-                    contentColor = FondoPanel // color: #23293e
+                    containerColor = Accent,
+                    contentColor = FondoPanel
                 ),
                 shape = RoundedCornerShape(7.dp),
                 modifier = Modifier.height(40.dp)
@@ -111,21 +108,17 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
             }
         }
 
-        // --- Tabla de Usuarios ---
         Surface(
-            shape = RoundedCornerShape(15.dp), // border-radius: 15px
-            color = FondoPanel, // background: #23293e
+            shape = RoundedCornerShape(15.dp),
+            color = FondoPanel,
             shadowElevation = 4.dp,
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(modifier = Modifier.padding(24.dp)) {
-                // Encabezado de la tabla (th)
                 item { UserTableHeader() }
 
-                // Filas de los usuarios (tr)
                 items(users) { user ->
                     UserRow(user, navController)
-                    // Separador de fila (simulando el border-bottom)
                     Divider(color = TextoSecundario.copy(alpha = 0.3f), thickness = 1.dp)
                 }
             }
@@ -133,17 +126,15 @@ fun UserListContent(users: List<User>, navController: NavController, modifier: M
     }
 }
 
-// ----------------------------------------------------------------------------------
 
 @Composable
 fun UserTableHeader() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(FondoDark, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)) // background: #181c25
+            .background(FondoDark, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
             .padding(vertical = 14.dp),
     ) {
-        // Since UserRow displays ID and then a column of details, the header should match the weight distribution.
         Text("Usuarios",
             Modifier.weight(0.5f),
             color = Accent, fontWeight = FontWeight.SemiBold,
@@ -152,7 +143,6 @@ fun UserTableHeader() {
     }
 }
 
-// ----------------------------------------------------------------------------------
 
 @Composable
 fun UserRow(user: User, navController: NavController) {
@@ -168,19 +158,17 @@ fun UserRow(user: User, navController: NavController) {
             color = TextoPrincipal,
             fontSize = 14.sp)
 
-        // User Details (Avatar, Name, Email, Rol, Edit Button)
         Column (
             modifier = Modifier
                 .weight(4.5f)
                 .padding(start = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            // Avatar Placeholder (Simulating .usuario-avatar CSS/HTML element)
             Box(
                 modifier = Modifier
                     .size(130.dp) // size: 42px in css + border
-                    .background(FondoDark, shape = RoundedCornerShape(50)) // border-radius: 50%
-                    .border(2.dp, Accent, RoundedCornerShape(50)), // border: 2px solid #03ffe2
+                    .background(FondoDark, shape = RoundedCornerShape(50))
+                    .border(2.dp, Accent, RoundedCornerShape(50)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = "AVATAR",
@@ -212,7 +200,6 @@ fun UserRow(user: User, navController: NavController) {
 
             Spacer(Modifier.height(10.dp))
 
-            // Edit Button (Acciones)
             Button(
                 onClick = {
                     navController.navigate("edit_user/${user.id}")
@@ -238,6 +225,3 @@ fun UserRow(user: User, navController: NavController) {
 }
 
 
-
-
-//askak

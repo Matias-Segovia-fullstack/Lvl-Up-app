@@ -64,12 +64,11 @@ fun EditProduct(navController: NavController, productId: Int) {
                     .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                EditProductForm(navController, viewModel, productId) // ⬅️ Pasa el ID
+                EditProductForm(navController, viewModel, productId)
 
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
-            // Asumo que DownbarMenu es tu barra de navegación inferior
             DownbarMenu(
                 navController = navController,
                 modifier = Modifier.fillMaxWidth()
@@ -78,7 +77,6 @@ fun EditProduct(navController: NavController, productId: Int) {
     }
 }
 
-// Reutilizamos las funciones de validación de tu archivo CreateProduct
 private fun validatePrice(price: String): Boolean {
     val priceValue = price.replace(",", ".").toDoubleOrNull()
     return priceValue != null && priceValue > 0.0
@@ -91,14 +89,12 @@ private fun validateStock(stock: String): Boolean {
 
 @Composable
 fun EditProductForm(navController: NavController, viewModel: ProductViewModel, productId: Int) {
-    // 1. Estados para el producto original y los campos editables
     var originalProduct by remember { mutableStateOf<Product?>(null) }
     var nombre by remember { mutableStateOf("Cargando...") }
     var categoria by remember { mutableStateOf("Cargando...") }
     var precio by remember { mutableStateOf("") }
     var stock by remember { mutableStateOf("") }
 
-    // 2. Estados para errores
     var precioError by remember { mutableStateOf<String?>(null) }
     var stockError by remember { mutableStateOf<String?>(null) }
 
@@ -106,7 +102,6 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
     val (precioFocus, stockFocus) = FocusRequester.createRefs()
     val scope = rememberCoroutineScope()
 
-    // 3. Cargar datos del producto al iniciar el componente
     LaunchedEffect(productId) {
         scope.launch {
             val product = viewModel.getProductForEdit(productId)
@@ -118,7 +113,6 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
                 stock = it.stock.toString()
             } ?: run {
                 nombre = "Producto no encontrado"
-                // Opcional: mostrar un Toast o redirigir
             }
         }
     }
@@ -141,7 +135,6 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Muestra el nombre y categoría del producto
         Text(
             text = nombre,
             fontSize = 28.sp,
@@ -151,7 +144,7 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
         Text(
             text = categoria,
             fontSize = 20.sp,
-            color = FondoPanel, // Usé FondoPanel, puedes usar otro color
+            color = FondoPanel, /
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -171,14 +164,10 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
                 verticalArrangement = Arrangement.spacedBy(19.dp)
             ) {
 
-                // --- 1. Nombre y Categoría (NO EDITABLES) ---
-                // Se muestran fuera de la Surface o como Text/ReadOnly TextField si lo deseas.
 
-                // --- 2. Precio (EDITABLE) ---
                 OutlinedTextField(
                     value = precio,
                     onValueChange = { newValue ->
-                        // Permite solo números y punto/coma para el precio
                         precio = newValue.filter { char -> char.isDigit() || char == '.' || char == ',' }
                         precioError = if (precio.isNotEmpty() && !validatePrice(precio)) {
                             "El precio debe ser mayor que 0."
@@ -194,11 +183,9 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
                     supportingText = { if (precioError != null) Text(precioError!!, color = ErrorColor) }
                 )
 
-                // --- 3. Stock (EDITABLE) ---
                 OutlinedTextField(
                     value = stock,
                     onValueChange = { newValue ->
-                        // Permite solo números enteros para el stock
                         stock = newValue.filter { char -> char.isDigit() }
                         stockError = if (stock.isNotEmpty() && !validateStock(stock)) {
                             "El stock debe ser un número entero mayor que 0."
@@ -216,7 +203,6 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
 
                 Button(
                     onClick = {
-                        // Re-validación final
                         precioError = if (!validatePrice(precio)) "El precio debe ser un número mayor que 0." else null
                         stockError = if (!validateStock(stock)) "El stock debe ser un número entero mayor que 0." else null
 
@@ -227,13 +213,13 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
                         if (!hasError && originalProduct != null) {
                             val updatedProduct = originalProduct!!.copy(
                                 price = precio,
-                                stock = stock.toIntOrNull() ?: originalProduct!!.stock // Fallback al stock original si falla
+                                stock = stock.toIntOrNull() ?: originalProduct!!.stock
                             )
 
-                            // 4. Llamada para actualizar el producto
+
                             viewModel.updateProduct(updatedProduct)
 
-                            // 5. Navegación
+
                             navController.popBackStack()
                         }
                     },

@@ -1,5 +1,3 @@
-// En app/src/main/java/com/example/lvl_up/ui/ProductoVentaScreen.kt
-
 package com.example.lvl_up.ui
 
 import androidx.compose.foundation.BorderStroke
@@ -43,23 +41,20 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
     val context = LocalContext.current
     val application = context.applicationContext as LvlUpApplication
 
-    // ViewModel para obtener los datos del producto
+
     val productFactory = ProductViewModelFactory(application.productRepository)
     val productViewModel: ProductViewModel = viewModel(factory = productFactory)
 
-    // ViewModel para las acciones del carrito
     val carritoFactory = CarritoViewModelFactory(application.carritoRepository, application.productRepository)
     val carritoViewModel: CarritoViewModel = viewModel(factory = carritoFactory)
 
     var product by remember { mutableStateOf<Product?>(null) }
     var quantity by remember { mutableStateOf(1) }
 
-    // Busca los detalles del producto una sola vez cuando la pantalla se carga
     LaunchedEffect(productId) {
         product = productViewModel.getProductForEdit(productId)
     }
 
-    // Formateador para pesos chilenos
     val clpFormatter = remember {
         NumberFormat.getCurrencyInstance(Locale("es", "CL")).apply {
             maximumFractionDigits = 0
@@ -89,7 +84,6 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        // Imagen del producto (usando un placeholder)
                         Image(
                             painter = painterResource(id = R.drawable.placeholder_product),
                             contentDescription = p.name,
@@ -102,7 +96,7 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // Nombre del producto
+
                         Text(
                             text = p.name,
                             style = MaterialTheme.typography.headlineLarge,
@@ -112,7 +106,7 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Fila para Precio y Stock
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -133,7 +127,6 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // Selector de cantidad
                         QuantitySelector(
                             quantity = quantity,
                             onQuantityChange = { newQuantity ->
@@ -146,11 +139,10 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // Botón para agregar al carrito
                         Button(
                             onClick = {
                                 carritoViewModel.addToCart(p, quantity)
-                                navController.popBackStack() // Vuelve a la pantalla anterior
+                                navController.popBackStack()
                             },
                             enabled = p.stock > 0,
                             shape = RoundedCornerShape(8.dp),
@@ -164,7 +156,6 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        // Botón para salir
                         OutlinedButton(
                             onClick = { navController.popBackStack() },
                             shape = RoundedCornerShape(8.dp),

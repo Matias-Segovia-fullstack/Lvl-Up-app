@@ -105,14 +105,13 @@ fun DownbarButton(
 fun DownbarMenu(navController: NavController, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .fillMaxWidth() // ⬅️ Ocupa todo el ancho
-            .height(70.dp) // ⬅️ Altura fija para la barra inferior
-            .background(FondoPanel, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // Fondo y radio superior
-            .padding(horizontal = 4.dp), // Padding lateral
+            .fillMaxWidth()
+            .height(70.dp)
+            .background(FondoPanel, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround // Distribuye el espacio entre los botones
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
-        // Eliminamos el texto "Mi Tienda PC Gamer" y los Spacers innecesarios en la barra inferior
 
         DownbarButton(Icons.Default.Home, "Inicio") {
             navController.navigate("admin")
@@ -124,20 +123,16 @@ fun DownbarMenu(navController: NavController, modifier: Modifier = Modifier) {
             navController.navigate("user")
         }
 
-        // El botón de Salir se puede incluir como el último elemento:
         DownbarButton(Icons.Default.ExitToApp, "Salir", isLogout = true) {
             navController.navigate("login")
         }
     }
 }
 
-// ... (Las funciones MainContent y WidgetCard se mantienen sin cambios) ...
-// Nota: La función MainContent ahora recibe todo el peso vertical (1f) de la Column
-
 @Composable
 fun MainContent(
-    productCount: Int, // 🚨 Nuevo parámetro
-    userCount: Int,    // 🚨 Nuevo parámetro
+    productCount: Int,
+    userCount: Int,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {

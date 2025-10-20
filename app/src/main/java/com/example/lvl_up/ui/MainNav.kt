@@ -7,8 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.lvl_up.CategoriasScreen
-
-// ✅ IMPORTACIONES DE PANTALLAS
 import com.example.lvl_up.PCGamerGuideScreen
 import com.example.lvl_up.TiendaScreen
 import com.example.lvl_up.RetroGamesScreen

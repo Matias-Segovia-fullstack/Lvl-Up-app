@@ -34,16 +34,11 @@ import com.example.lvl_up.ui.theme_Tienda.*
 
 
 
-// =================================================================
-// CLASES DE DATOS (CORREGIDAS)
-// =================================================================
 data class OfferItem(val imageResId: Int, val title: String, val description: String, val price: String, val oldPrice: String)
 data class NewsItem(val title: String, val summary: String, val imageResId: Int)
 
 
-// =================================================================
-// PANTALLA PRINCIPAL
-// =================================================================
+
 @Composable
 fun TiendaScreen(navController: NavController) {
     TiendaGamerTheme {
@@ -52,7 +47,6 @@ fun TiendaScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(
                     brush = Brush.linearGradient(
-                        // Usa los colores definidos en Color.kt a través del ColorScheme
                         colors = listOf(MaterialTheme.colorScheme.background, Color.Black.copy(alpha = 0.9f))
                     )
                 ),
@@ -68,7 +62,6 @@ fun TiendaScreen(navController: NavController) {
             item { Spacer(modifier = Modifier.height(24.dp)) }
             item { CatalogBanner(navController) }
             item { Spacer(modifier = Modifier.height(24.dp)) }
-            // ✅ MODIFICACIÓN 1: Pasar navController a NewsSection
             item { NewsSection(navController) }
             item { Spacer(modifier = Modifier.height(24.dp)) }
             item { Footer() }
@@ -76,27 +69,24 @@ fun TiendaScreen(navController: NavController) {
     }
 }
 
-// =================================================================
-// COMPONENTES DE UI
-// =================================================================
 
 @Composable
 fun Navbar(navController: NavController) {
-    // El contenedor principal es una Columna para apilar las dos filas
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(NavbarDark)
-            .padding(start = 16.dp, end = 16.dp, top = 40.dp, bottom = 8.dp), // Ajustamos el padding
+            .padding(start = 16.dp, end = 16.dp, top = 40.dp, bottom = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // --- Fila Superior: Título y Logo ---
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Título con acentos de color
+
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = Color.Red)) { append("⚡") }
@@ -107,7 +97,7 @@ fun Navbar(navController: NavController) {
                 style = MaterialTheme.typography.headlineMedium,
             )
 
-            // Simulación de Logo
+
             Image(
                 painter = painterResource(id = R.drawable.pixel),
                 contentDescription = "Logo",
@@ -115,16 +105,13 @@ fun Navbar(navController: NavController) {
             )
         }
 
-        // Espacio vertical entre la fila superior y la inferior
         Spacer(modifier = Modifier.height(8.dp))
 
-        // --- Fila Inferior: Información de Usuario / Login ---
-        // Usamos un Box para alinear su contenido a la derecha
+
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.CenterEnd
         ) {
-            // Revisa si hay un usuario con sesión iniciada
             Column(horizontalAlignment = Alignment.End) {
                 Row {
                     Text(
@@ -170,7 +157,6 @@ fun CultureBanner() {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Usar un ícono genérico para simular bi-controller
         Icon(
             painter = painterResource(id = R.drawable.ic_controller),
             contentDescription = "Controller",
@@ -191,7 +177,6 @@ fun CultureBanner() {
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Simulación de Imagen
         Image(
             painter = painterResource(id = R.drawable.rainbow_six_symbol),
             contentDescription = "R6 Logo",
@@ -211,10 +196,8 @@ fun CartButton(navController: NavController) {
             .padding(horizontal = 16.dp)
             .height(48.dp),
         shape = MaterialTheme.shapes.small,
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary) // AccentBlue
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
     ) {
-        // Usar un ícono genérico para simular 🛒
-        //Icon(painter = painterResource(id = R.drawable.ic_shopping_cart), contentDescription = "Carrito")
         Spacer(modifier = Modifier.width(8.dp))
         Text("🛒 Ver carrito", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
     }
@@ -246,13 +229,12 @@ fun OffersSection() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Código corregido para OffersSection
         Text(
             text = "⚡ GRANDES OFERTAS ⚡",
             modifier = Modifier.padding(bottom = 16.dp),
             style = MaterialTheme.typography.headlineLarge.copy(
-                color = NeonCyan, // Establece el color Neón Cian
-                shadow = Shadow(color = NeonCyan.copy(alpha = 0.5f), blurRadius = 10f) // Aplica el efecto de sombra
+                color = NeonCyan,
+                shadow = Shadow(color = NeonCyan.copy(alpha = 0.5f), blurRadius = 10f)
             )
         )
 
@@ -278,7 +260,6 @@ fun ProductCard(item: OfferItem) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // Placeholder para la imagen del producto
             Image(
 
                 painter = painterResource(id = item.imageResId),
@@ -300,7 +281,6 @@ fun ProductCard(item: OfferItem) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Precio Tachado
                 Text(
                     text = item.oldPrice,
                     color = MutedText,
@@ -308,19 +288,17 @@ fun ProductCard(item: OfferItem) {
                     textDecoration = TextDecoration.LineThrough
                 )
 
-                // Precio de Oferta
                 Text(
                     text = item.price,
-                    color = PriceSuccess, // Color verde/éxito
+                    color = PriceSuccess,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 18.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Botón "Agregar al carrito"
                 Button(
-                    onClick = { /* Acción de agregar al carrito */ },
+                    onClick = {  },
                     colors = ButtonDefaults.buttonColors(containerColor = NeonCyan),
                     shape = RoundedCornerShape(6.dp),
                     modifier = Modifier.fillMaxWidth().height(36.dp)
@@ -328,7 +306,6 @@ fun ProductCard(item: OfferItem) {
                     Text("Agregar al carrito", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                 }
 
-                // Botón "Ver detalles"
                 Button(
                     onClick = { /* Acción Ver detalles */ },
                     colors = ButtonDefaults.buttonColors(containerColor = DarkButton),
@@ -354,7 +331,6 @@ fun CatalogBanner(navController: NavController) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Usar un ícono genérico para simular bi-stars
         Icon(painter = painterResource(id = R.drawable.ic_stars), contentDescription = "Stars", tint = NeonCyan, modifier = Modifier.size(32.dp))
         Spacer(modifier = Modifier.width(12.dp))
         Text(
@@ -368,7 +344,6 @@ fun CatalogBanner(navController: NavController) {
         )
         Spacer(modifier = Modifier.width(12.dp))
         Button(
-            // 🎯 MODIFICACIÓN: Añadir la navegación al NavController
             onClick = { navController.navigate("catalog") },
             colors = ButtonDefaults.buttonColors(containerColor = NeonCyan),
             shape = MaterialTheme.shapes.small
@@ -378,12 +353,10 @@ fun CatalogBanner(navController: NavController) {
     }
 }
 
-// =================================================================
-// COMPONENTES DE NOTICIAS (MODIFICADOS PARA NAVEGACIÓN)
-// =================================================================
+
 
 @Composable
-// ✅ MODIFICACIÓN 2: Recibe navController
+
 fun NewsSection(navController: NavController) {
     val newsItems = listOf(
         NewsItem("🎮 Top 5 Mejores Juegos Retro de PC", "Revive la nostalgia gamer con estos clásicos inolvidables...", R.drawable.age),
@@ -395,7 +368,7 @@ fun NewsSection(navController: NavController) {
             text = "Noticias Gamer",
             modifier = Modifier.padding(bottom = 16.dp),
             style = MaterialTheme.typography.headlineMedium.copy(
-                color = NeonCyan, // Se asegura que el color sea NeonCyan
+                color = NeonCyan,
                 shadow = Shadow(color = NeonCyan.copy(alpha = 0.5f), blurRadius = 8f)
             )
         )
@@ -403,7 +376,6 @@ fun NewsSection(navController: NavController) {
 
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             newsItems.forEach { item ->
-                // ✅ MODIFICACIÓN 3: Pasa navController a NewsCard
                 NewsCard(item, Modifier.weight(1f), navController)
             }
         }
@@ -411,7 +383,6 @@ fun NewsSection(navController: NavController) {
 }
 
 @Composable
-// ✅ MODIFICACIÓN 4: Recibe navController
 fun NewsCard(item: NewsItem, modifier: Modifier = Modifier, navController: NavController) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -420,7 +391,6 @@ fun NewsCard(item: NewsItem, modifier: Modifier = Modifier, navController: NavCo
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column {
-            // Placeholder para la imagen de noticias
             Image(
                 painter = painterResource(id = item.imageResId),
                 contentDescription = item.title,
@@ -433,16 +403,15 @@ fun NewsCard(item: NewsItem, modifier: Modifier = Modifier, navController: NavCo
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(item.title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp))
                 Text(item.summary, color = MutedText, fontSize = 14.sp, modifier = Modifier.padding(bottom = 8.dp))
-                // Dentro de la función NewsCard en TiendaScreen.kt:
+
 
                 Button(
                     onClick = {
-                        // LÓGICA DE NAVEGACIÓN MEJORADA
                         if (item.title.contains("Top 5 Mejores Juegos Retro de PC")) {
-                            // Si es la noticia Retro, navega a su detalle
+
                             navController.navigate("retroGamesDetail")
                         } else if (item.title.contains("Guía para Elegir tu PC Gamer Ideal")) {
-                            // ✅ Si es la noticia de la Guía, navega a su detalle
+
                             navController.navigate("pcGamerGuide")
                         }
                     },
@@ -466,15 +435,13 @@ fun Footer() {
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // El contenedor principal ahora es una Column en lugar de un Row.
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), // Añadimos un padding general para que no esté pegado a los bordes
-            verticalArrangement = Arrangement.spacedBy(24.dp) // Añade un espacio vertical de 24.dp entre las dos secciones
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Sobre Nosotros (Se mantiene como una Column interna)
-            // Se elimina el .weight(1f) porque ya no compite por el espacio horizontal.
+
             Column(Modifier.fillMaxWidth()) {
                 Text("Sobre Nosotros", color = NeonCyan, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
                 Text(
@@ -485,8 +452,6 @@ fun Footer() {
                 )
             }
 
-            // Contáctanos (Se mantiene como una Column interna)
-            // Se elimina el .weight(0.5f).
             Column(Modifier.fillMaxWidth()) {
                 Text("Contáctanos", color = NeonCyan, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
                 Text("soporte@mitiendagamer.com", color = MutedText, fontSize = 14.sp)
