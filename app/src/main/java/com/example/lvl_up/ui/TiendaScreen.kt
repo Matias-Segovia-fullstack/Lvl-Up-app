@@ -342,7 +342,8 @@ fun CatalogBanner(navController: NavController) {
         )
         Spacer(modifier = Modifier.width(12.dp))
         Button(
-            onClick = { /* Navegar a Catálogo */ },
+            // 🎯 MODIFICACIÓN: Añadir la navegación al NavController
+            onClick = { navController.navigate("catalog") },
             colors = ButtonDefaults.buttonColors(containerColor = NeonCyan),
             shape = MaterialTheme.shapes.small
         ) {
