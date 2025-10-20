@@ -31,6 +31,7 @@ fun MainNav() {
         composable("pcGamerGuide") { PCGamerGuideScreen(navController) }
         composable("registro") { RegistroScreen(navController) }
         composable(route = "catalog") { CategoriasScreen(navController) }
+        composable("carrito") { CarritoScreen(navController)}
 
 
         composable(
