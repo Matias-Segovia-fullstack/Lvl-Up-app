@@ -148,6 +148,8 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                         val user = viewModel.loginUser(email.trim(), password.trim())
                         if (user != null) {
                             UserManager.currentUserId = user.id
+                            UserManager.currentUserName = user.nombre
+                            UserManager.currentUserEmail = user.correo
                             val destination = if (user.rol.equals("Administrador", ignoreCase = true)) {
                                 "admin"
                             } else {
