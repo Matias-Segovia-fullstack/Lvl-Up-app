@@ -6,8 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.lvl_up.PCGamerGuideScreen
 import com.example.lvl_up.TiendaScreen
-
+import com.example.lvl_up.RetroGamesScreen
 @Composable
 fun MainNav() {
     val navController = rememberNavController()
@@ -19,6 +20,8 @@ fun MainNav() {
         composable("crearProducto") { CreateProduct(navController)}
         composable ("crearUsuario"){ CreateUser(navController) }
         composable ("tienda"){ TiendaScreen(navController) }
+        composable("retroGamesDetail") { RetroGamesScreen(navController) }
+        composable("pcGamerGuide") { PCGamerGuideScreen(navController) }
 
         composable(
             route = "edit_product/{productId}",
