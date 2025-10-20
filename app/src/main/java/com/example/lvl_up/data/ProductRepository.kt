@@ -28,4 +28,8 @@ class ProductRepository(private val productDao: ProductDao) {
     suspend fun getProductById(id: Int): Product? {
         return productDao.getProductById(id)
     }
+
+    fun getProductsByCategory(category: String): Flow<List<Product>> {
+        return productDao.getProductsByCategory(category)
+    }
 }

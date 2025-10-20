@@ -92,7 +92,7 @@ fun CategoryItemComponent(category: CategoryItem, navController: NavController) 
             .background(darkBlue)
             .border(1.dp, neonBorder, RoundedCornerShape(8.dp))
             .clickable {
-                // Acción de navegación futura
+                navController.navigate("product_categories/${category.name}")
             }
             .padding(start = 16.dp),
         verticalAlignment = Alignment.CenterVertically

@@ -24,4 +24,7 @@ interface ProductDao {
 
     @Query("SELECT COUNT(id) FROM products_table")
     fun getProductCount(): Flow<Int>
+
+    @Query("SELECT * FROM products_table WHERE category = :category")
+    fun getProductsByCategory(category: String): Flow<List<Product>>
 }

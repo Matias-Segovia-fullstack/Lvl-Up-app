@@ -33,7 +33,6 @@ fun MainNav() {
         composable(route = "catalog") { CategoriasScreen(navController) }
         composable("carrito") { CarritoScreen(navController)}
 
-
         composable(
             route = "edit_product/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.IntType })
@@ -42,13 +41,22 @@ fun MainNav() {
             EditProduct(navController = navController, productId = productId)
         }
 
-
         composable(
             route = "edit_user/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
             EditUser(navController = navController, userId = userId)
+        }
+
+        composable(
+            route = "product_categories/{category}",
+            arguments = listOf(navArgument("category") { type = NavType.StringType })
+        ) { backStackEntry ->
+            ProductCategoriesScreen(
+                navController = navController,
+                category = backStackEntry.arguments?.getString("category")
+            )
         }
     }
 }
