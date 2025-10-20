@@ -1,27 +1,35 @@
 package com.example.lvl_up.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.lvl_up.data.ItemCarrito
 import com.example.lvl_up.data.CarritoRepository
+import com.example.lvl_up.data.ItemCarrito
+import com.example.lvl_up.data.UserManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf // <-- IMPORTACIÓN AÑADIDA
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 class CarritoViewModel(private val repository: CarritoRepository) : ViewModel() {
 
-    private val currentUserId = 2
+    private val currentUserId = UserManager.currentUserId
 
-
-    val itemsDelCarrito: StateFlow<List<ItemCarrito>> = repository.getCartItems(currentUserId)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-
+    val itemsDelCarrito: StateFlow<List<ItemCarrito>> =
+        currentUserId?.let { userId ->
+            repository.getCartItems(userId)
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = emptyList()
+                )
+        } ?: flowOf<List<ItemCarrito>>(emptyList())
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList()
+            )
 
     fun actualizarCantidad(item: ItemCarrito, cambio: Int) {
         viewModelScope.launch {
@@ -29,7 +37,6 @@ class CarritoViewModel(private val repository: CarritoRepository) : ViewModel() 
             repository.updateQuantity(itemActualizado)
         }
     }
-
 
     fun eliminarItem(item: ItemCarrito) {
         viewModelScope.launch {
@@ -39,12 +46,12 @@ class CarritoViewModel(private val repository: CarritoRepository) : ViewModel() 
     }
 
 
+
     fun vaciarCarrito() {
         viewModelScope.launch {
-            repository.clearCart(currentUserId)
+            currentUserId?.let { userId ->
+                repository.clearCart(userId)
+            }
         }
     }
 }
-
-
-
