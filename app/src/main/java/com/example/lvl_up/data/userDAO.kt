@@ -28,4 +28,10 @@ interface UserDAO {
     //para validar en el login
     @Query("SELECT * FROM users_table WHERE correo = :email AND contrasena = :password LIMIT 1")
     suspend fun findUserByCredentials(email: String, password: String): User?
+
+    @Query("SELECT * FROM users_table WHERE rut = :rut LIMIT 1")
+    suspend fun findByRut(rut: String): User?
+
+    @Query("SELECT * FROM users_table WHERE correo = :email LIMIT 1")
+    suspend fun findByEmail(email: String): User?
 }

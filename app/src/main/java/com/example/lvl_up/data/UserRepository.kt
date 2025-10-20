@@ -24,5 +24,13 @@ class UserRepository (private val userDAO: UserDAO) {
         return userDAO.findUserByCredentials(email, password)
     }
 
+    suspend fun findByRut(rut: String): User? {
+        return userDAO.findByRut(rut)
+    }
+
+    suspend fun findByEmail(email: String): User? {
+        return userDAO.findByEmail(email)
+    }
+
 
 }
