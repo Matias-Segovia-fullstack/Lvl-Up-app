@@ -214,7 +214,9 @@ fun UserRow(user: User, navController: NavController) {
 
             // Edit Button (Acciones)
             Button(
-                onClick = {    },
+                onClick = {
+                    navController.navigate("edit_user/${user.id}")
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent,
                     contentColor = FondoDark
