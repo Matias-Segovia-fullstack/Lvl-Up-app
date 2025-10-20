@@ -209,6 +209,7 @@ fun ProductRow(product: Product, navController: NavController) {
 
             Button(
                 onClick = {
+                    navController.navigate("edit_product/${product.id}")
                           },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent,
