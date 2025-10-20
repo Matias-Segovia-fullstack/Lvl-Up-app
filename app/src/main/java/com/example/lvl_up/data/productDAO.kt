@@ -27,4 +27,7 @@ interface ProductDao {
 
     @Query("SELECT * FROM products_table WHERE category = :category")
     fun getProductsByCategory(category: String): Flow<List<Product>>
+
+    @Query("UPDATE products_table SET stock = stock - :quantity WHERE id = :productId")
+    suspend fun decreaseStock(productId: Int, quantity: Int)
 }

@@ -32,4 +32,8 @@ class ProductRepository(private val productDao: ProductDao) {
     fun getProductsByCategory(category: String): Flow<List<Product>> {
         return productDao.getProductsByCategory(category)
     }
+
+    suspend fun decreaseStock(productId: Int, quantity: Int) {
+        productDao.decreaseStock(productId, quantity)
+    }
 }

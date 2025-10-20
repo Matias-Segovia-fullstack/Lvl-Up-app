@@ -34,6 +34,7 @@ data class ItemCarrito(
 
     val name: String,
     val price: Double,
-    val imageUrl: String
+    val imageUrl: String,
+    val stock: Int
 )
 

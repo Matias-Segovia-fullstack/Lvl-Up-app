@@ -126,7 +126,7 @@ fun ProductCategoryRow(product: Product, navController: NavController) {
             Button(
                 onClick = {
                     // Navega a una futura pantalla de detalles del producto
-                    //navController.navigate("product_detail/${product.id}")
+                    navController.navigate("product_detail/${product.id}")
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Accent,

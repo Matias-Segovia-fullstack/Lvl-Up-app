@@ -33,16 +33,14 @@ import java.util.*
 fun CarritoScreen(navController: NavController) {
     val context = LocalContext.current
     val application = context.applicationContext as LvlUpApplication
-    val factory = CarritoViewModelFactory(application.carritoRepository)
+
+    // ✅ 1. ACTUALIZA LA CREACIÓN DE LA FACTORY
+    // Ahora le pasamos ambos repositorios.
+    val factory = CarritoViewModelFactory(application.carritoRepository, application.productRepository)
     val viewModel: CarritoViewModel = viewModel(factory = factory)
 
-    // 2. Observar la lista de items del carrito desde el ViewModel
     val itemsDelCarrito by viewModel.itemsDelCarrito.collectAsState()
-
-    // 3. Calcular el total
     val totalCompra = itemsDelCarrito.sumOf { it.price * it.cantidad }
-
-    // Formateador para moneda chilena
     val formatoMoneda = remember {
         NumberFormat.getCurrencyInstance(Locale("es", "CL")).apply {
             maximumFractionDigits = 0
@@ -103,7 +101,7 @@ fun CarritoScreen(navController: NavController) {
             ResumenCompra(
                 total = formatoMoneda.format(totalCompra),
                 onVaciarCarrito = { viewModel.vaciarCarrito() },
-                onPagar = { /* Acción de pago futura */ }
+                onPagar = { viewModel.checkout() } // ✅ 2. CONECTA LA FUNCIÓN DE PAGO
             )
         }
     }
@@ -151,8 +149,17 @@ fun FilaProductoCarrito(
                     Icon(Icons.Default.Delete, "Quitar uno", tint = MutedText)
                 }
                 Text("${item.cantidad}", color = Color.White, fontWeight = FontWeight.Bold)
-                IconButton(onClick = { onQuantityChange(1) }) {
-                    Icon(Icons.Default.Add, "Añadir uno", tint = NeonCyan)
+
+                // ✅ 3. LÓGICA PARA LIMITAR POR STOCK
+                IconButton(
+                    onClick = { onQuantityChange(1) },
+                    enabled = item.cantidad < item.stock
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        "Añadir uno",
+                        tint = if (item.cantidad < item.stock) NeonCyan else MutedText
+                    )
                 }
                 IconButton(onClick = onRemoveItem) {
                     Icon(Icons.Default.Delete, "Eliminar", tint = RedAccent)
@@ -201,4 +208,3 @@ fun ResumenCompra(total: String, onVaciarCarrito: () -> Unit, onPagar: () -> Uni
         }
     }
 }
-

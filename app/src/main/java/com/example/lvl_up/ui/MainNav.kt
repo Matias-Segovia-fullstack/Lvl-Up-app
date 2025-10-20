@@ -58,6 +58,15 @@ fun MainNav() {
                 category = backStackEntry.arguments?.getString("category")
             )
         }
+
+        composable(
+            route = "product_detail/{productId}",
+            arguments = listOf(navArgument("productId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getInt("productId") ?: 0
+            ProductoVentaScreen(navController = navController, productId = productId)
+        }
+
     }
 }
 

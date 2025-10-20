@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [Product::class, User::class, ItemCarrito::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -98,28 +98,28 @@ abstract class AppDatabase : RoomDatabase() {
                                 val pc_gamer = Product(
                                     imageUrl = "pc_gamer_url",
                                     name = "PC gamer ASUS ROG STRIX",
-                                    category = "Computadores gamers",
+                                    category = "Computadoras gamers",
                                     price = "1299.990",
                                     stock = 5)
                                 productDao.insertProduct(pc_gamer)
                                 val silla_gamer_st = Product(
                                     imageUrl = "silla_gamer_st_url",
                                     name = "Silla gamer Secretlab titan",
-                                    category = "Sillas gamers",
+                                    category = "Sillas gamer",
                                     price = "349.990",
                                     stock = 18)
                                 productDao.insertProduct(silla_gamer_st)
                                 val mousepad_razer = Product(
                                     imageUrl = "mousepad_razer_url",
                                     name = "Mousepad Razer goliathus extended chroma",
-                                    category = "Mousepad",
+                                    category = "Mousepads",
                                     price = "29.990",
                                     stock = 30)
                                 productDao.insertProduct(mousepad_razer)
                                 val polera_per = Product(
                                     imageUrl = "polera_per_url",
                                     name = "Polera gamer personalizada 'level-up'croma",
-                                    category = "Poleras y polerones personalizadas",
+                                    category = "Poleras y polerones personalizados",
                                     price = "14.990",
                                     stock = 18)
                                 productDao.insertProduct(polera_per)
