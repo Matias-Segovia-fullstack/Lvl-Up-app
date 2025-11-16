@@ -1,6 +1,15 @@
 package com.example.lvl_up.ui
 
 import android.R
+// <<< CAMBIO 1: Imports necesarios para el Calendario
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.provider.CalendarContract
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+// ---
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,12 +30,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat // <<< CAMBIO 2
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lvl_up.ui.theme_Admin.*
 import androidx.navigation.NavController
 import com.example.lvl_up.LvlUpApplication
 import com.example.lvl_up.viewmodel.AdminViewModel
 import com.example.lvl_up.viewmodel.AdminViewModelFactory
+import java.util.Calendar // <<< CAMBIO 3
 
 
 @Composable
@@ -167,6 +178,10 @@ fun MainContent(
             WidgetCard("Productos", productCount.toString())
             WidgetCard("Usuarios", userCount.toString())
             //WidgetCard("Pedidos", "58")
+
+            // <<< CAMBIO 4: Aquí ponemos el botón de prueba
+            Spacer(modifier = Modifier.height(20.dp))
+            EjemploDeCalendario()
         }
     }
 }
@@ -192,4 +207,69 @@ fun WidgetCard(title: String, value: String) {
             Text(value, style = MaterialTheme.typography.titleLarge)
         }
     }
+}
+
+
+// --- <<< CAMBIO 5: AÑADIMOS LAS FUNCIONES DEL CALENDARIO AL FINAL ---
+
+@Composable
+fun EjemploDeCalendario() {
+    val context = LocalContext.current
+
+    // 1. Launcher para pedir el permiso de CALENDARIO
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Si el permiso FUE concedido, lanza el calendario
+            lanzarIntentCalendario(context)
+        } else {
+            // Opcional: Muestra mensaje de error
+        }
+    }
+
+    Button(
+        onClick = {
+            // 2. Lógica del botón
+            when (PackageManager.PERMISSION_GRANTED) {
+                // Revisa si ya tenemos el permiso
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.WRITE_CALENDAR
+                ) -> {
+                    // Si ya lo tenemos, lanza el calendario
+                    lanzarIntentCalendario(context)
+                }
+                else -> {
+                    // Si NO lo tenemos, pide el permiso
+                    permissionLauncher.launch(Manifest.permission.WRITE_CALENDAR)
+                }
+            }
+        },
+        colors = ButtonDefaults.buttonColors(containerColor = Accent)
+    ) {
+        Text(text = "🗓️ Añadir evento (Prueba)", color = FondoDark)
+    }
+}
+
+// 3. Esta es la función que PREPARA los datos para la app de Calendario
+fun lanzarIntentCalendario(context: Context) {
+    // Fija una fecha de ejemplo (ej. 2 horas desde ahora)
+    val startTime = Calendar.getInstance()
+    startTime.add(Calendar.HOUR_OF_DAY, 2)
+    val endTime = Calendar.getInstance()
+    endTime.add(Calendar.HOUR_OF_DAY, 3)
+
+    // Crea el Intent para INSERTAR un evento
+    val intent = Intent(Intent.ACTION_INSERT).apply {
+        data = CalendarContract.Events.CONTENT_URI
+        putExtra(CalendarContract.Events.TITLE, "Lanzamiento Nuevo Funko")
+        putExtra(CalendarContract.Events.EVENT_LOCATION, "Tienda Lvl-Up")
+        putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime.timeInMillis)
+        putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.timeInMillis)
+        putExtra(CalendarContract.Events.DESCRIPTION, "¡No te pierdas el lanzamiento de la nueva figura!")
+    }
+
+    // Lanza el intent (esto abrirá la app de calendario del usuario)
+    context.startActivity(intent)
 }

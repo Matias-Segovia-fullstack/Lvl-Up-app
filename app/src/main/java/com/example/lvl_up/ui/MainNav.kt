@@ -6,6 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+
+// --- ¡¡CAMBIO 1: Imports actualizados!! ---
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+// ----------------------------------------
+
 import com.example.lvl_up.CategoriasScreen
 import com.example.lvl_up.PCGamerGuideScreen
 import com.example.lvl_up.TiendaScreen
@@ -17,7 +24,46 @@ import com.example.lvl_up.RetroGamesScreen
 fun MainNav() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(
+        navController = navController,
+        startDestination = "login",
+
+        // --- CAMBIO 2: Animaciones de Deslizamiento (Slide) ---
+
+        // Animación para la pantalla que ENTRA (se desliza desde la derecha)
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { 1000 }, // Empieza 1000px a la derecha
+                animationSpec = tween(300)
+            )
+        },
+
+        // Animación para la pantalla que SALE (se desliza hacia la izquierda)
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -1000 }, // Termina 1000px a la izquierda
+                animationSpec = tween(300)
+            )
+        },
+
+        // Animación cuando VUELVES (pop) y la pantalla entra
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -1000 }, // Entra desde la izquierda
+                animationSpec = tween(300)
+            )
+        },
+
+        // Animación cuando VUELVES (pop) y la pantalla sale
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { 1000 }, // Sale hacia la derecha
+                animationSpec = tween(300)
+            )
+        }
+        // ----------------------------------------------------
+
+    ) {
         composable("login") { LoginScreen(navController) }
         composable("admin") { AdminScreen(navController) }
         composable("user") { UserScreen(navController) }
@@ -67,4 +113,3 @@ fun MainNav() {
 
     }
 }
-

@@ -31,6 +31,8 @@ import com.example.lvl_up.LvlUpApplication
 import com.example.lvl_up.ui.theme_Tienda.*
 import com.example.lvl_up.viewmodel.UserViewModel
 import com.example.lvl_up.viewmodel.UserViewModelFactory
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,6 +72,7 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginError by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
     val passwordFocusRequester = remember { FocusRequester() }
@@ -108,7 +111,8 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                     focusedIndicatorColor = NeonCyan,
                     unfocusedIndicatorColor = MutedText,
                     cursorColor = NeonCyan
-                )
+                ),
+                enabled = !isLoading
             )
 
             OutlinedTextField(
@@ -127,25 +131,57 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                     focusedIndicatorColor = NeonCyan,
                     unfocusedIndicatorColor = MutedText,
                     cursorColor = NeonCyan
-                )
+                ),
+                enabled = !isLoading
             )
 
-            if (loginError != null) {
-                Text(
-                    text = loginError!!,
-                    color = RedAccent,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
+            // --- CAMBIO 1: Contenedor para la barra Y el error ---
+            // Le damos una altura mínima fija para que los botones de abajo no salten
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 40.dp) // <<< ALTURA MÍNIMA
+                    .padding(vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isLoading) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth().height(6.dp), // <<< BARRA MÁS GRUESA
+                        color = NeonCyan,
+                        trackColor = MutedText.copy(alpha = 0.4f)
+                    )
+                } else if (loginError != null) {
+                    // El error aparece en el mismo espacio
+                    Text(
+                        text = loginError!!,
+                        color = RedAccent,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
+            // Eliminamos el Spacer(10.dp) que estaba antes del botón
 
             Button(
                 onClick = {
                     focusManager.clearFocus()
+                    if (isLoading) return@Button
+
                     scope.launch {
-                        val user = viewModel.loginUser(email.trim(), password.trim())
+                        isLoading = true
+                        loginError = null
+
+                        val loginJob = async {
+                            viewModel.loginUser(email.trim(), password.trim())
+                        }
+
+                        val timerJob = launch {
+                            delay(2000) // 2 segundos
+                        }
+
+                        val user = loginJob.await()
+                        timerJob.join()
+
                         if (user != null) {
                             UserManager.currentUserId = user.id
                             UserManager.currentUserName = user.nombre
@@ -161,11 +197,14 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                         } else {
                             loginError = "Correo o contraseña incorrectos."
                         }
+
+                        isLoading = false
                     }
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = NeonCyan, contentColor = DarkButton),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                enabled = !isLoading
             ) {
                 Text("INICIAR SESIÓN", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
@@ -174,7 +213,8 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                 onClick = { navController.navigate("registro") },
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(1.dp, NeonCyan),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                enabled = !isLoading
             ) {
                 Text("REGISTRARSE", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = NeonCyan)
             }
