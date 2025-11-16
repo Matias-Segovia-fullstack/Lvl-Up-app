@@ -144,7 +144,7 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
         Text(
             text = categoria,
             fontSize = 20.sp,
-            color = FondoPanel, /
+            color = FondoPanel,
             style = MaterialTheme.typography.bodyLarge
         )
 

@@ -1,6 +1,15 @@
 package com.example.lvl_up.ui
 
+// <<< CAMBIO: Imports necesarios para la cámara
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.PhotoCamera // Icono de cámara
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap // Para mostrar el Bitmap
+import androidx.compose.ui.layout.ContentScale // Para escalar la imagen
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -29,7 +41,10 @@ import com.example.lvl_up.LvlUpApplication
 import com.example.lvl_up.viewmodel.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.input.ImeAction
+import androidx.core.content.ContextCompat // Para revisar permisos
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.draw.clip // <<< ARREGLO: Import para .clip()
+import androidx.compose.foundation.BorderStroke // <<< ARREGLO: Import para BorderStroke
 
 
 @Composable
@@ -107,7 +122,12 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
         var stock by remember { mutableStateOf("") }
         var categoria by remember { mutableStateOf("") }
         var descripcion by remember { mutableStateOf("") }
+
+        // <<< CAMBIO 1: Estado para la URL (texto) y el Bitmap (vista previa)
         var urlImagen by remember { mutableStateOf("") }
+        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+        val context = LocalContext.current
+        // ---
 
         var nombreError by remember { mutableStateOf<String?>(null) }
         var precioError by remember { mutableStateOf<String?>(null) }
@@ -117,6 +137,29 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
         val (nombreFocus, precioFocus, stockFocus, descripcionFocus, urlFocus) = FocusRequester.createRefs()
 
         val categoriasList = listOf("Juegos de mesa", "Accesorios", "Consolas", "Computadoras gamers", "Sillas gamer", "Mousepads", "Poleras y polerones personalizados")
+
+        // <<< CAMBIO 2: Launcher para la cámara (pide un Bitmap)
+        val cameraLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.TakePicturePreview()
+        ) { newBitmap: Bitmap? ->
+            bitmap = newBitmap // Actualiza la vista previa
+            // Simulamos un nombre de archivo. En un caso real, usarías una URI
+            if (newBitmap != null) {
+                // Llenamos urlImagen con un texto para que pase la validación
+                urlImagen = "foto_${System.currentTimeMillis()}.jpg"
+            }
+        }
+
+        // <<< CAMBIO 3: Launcher para pedir el permiso de CÁMARA
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                cameraLauncher.launch() // Si nos dan permiso, abre la cámara
+            }
+            // (Opcional: puedes poner un 'else' para notificar al usuario que el permiso fue denegado)
+        }
+        // ---
 
         Surface(
             shape = RoundedCornerShape(18.dp),
@@ -241,22 +284,61 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                         .focusRequester(descripcionFocus),
                     maxLines = 5,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { urlFocus.requestFocus() }),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.clearFocus() }), // Cambiado a Done
                     isError = descripcionError != null,
                     supportingText = { if (descripcionError != null) Text(descripcionError!!, color = ErrorColor) }
                 )
 
                 // --- 5. Imagen (URL/File) ---
-                OutlinedTextField(
-                    value = urlImagen,
-                    onValueChange = { urlImagen = it },
-                    label = { Text("URL/File de la Imagen") },
+                // <<< CAMBIO 4: Reemplazamos el TextField por la vista previa y el botón
+
+                // Vista previa de la imagen
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(urlFocus),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                )
+                        .height(150.dp)
+                        .background(FondoDark.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                        .border(1.dp, Accent.copy(alpha = 0.5f), RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Si hay un bitmap (foto tomada), muéstralo
+                    bitmap?.let {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "Foto del producto",
+                            contentScale = ContentScale.Crop, // Escala la imagen para que llene el box
+                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp)) // Redondea la imagen
+                        )
+                    } ?: Text("Vista Previa de la Imagen", color = TextoSecundario) // Texto si no hay foto
+                }
+
+                // Botón para tomar foto
+                OutlinedButton( // Cambiado a OutlinedButton para que combine mejor
+                    onClick = {
+                        // Lógica del botón de la cámara
+                        when (PackageManager.PERMISSION_GRANTED) {
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.CAMERA
+                            ) -> {
+                                // Si ya tenemos permiso, abre la cámara
+                                cameraLauncher.launch()
+                            }
+                            else -> {
+                                // Si no, pide permiso
+                                permissionLauncher.launch(Manifest.permission.CAMERA)
+                            }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    border = BorderStroke(1.dp, Accent) // Borde color Accent
+                ) {
+                    Icon(Icons.Default.PhotoCamera, contentDescription = "Cámara", tint = Accent)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Tomar Foto del Producto", color = Accent)
+                }
+                // --- Fin del CAMBIO 4 ---
+
 
                 Button(
                     onClick = {
@@ -265,8 +347,14 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                         stockError = if (!validateStock(stock)) "El stock debe ser un número entero mayor que 0." else null
                         descripcionError = if (descripcion.isBlank()) "La descripción es obligatoria." else null
 
+                        // <<< CAMBIO 5: Validamos que urlImagen no esté vacío (se llena al tomar la foto)
                         val urlEsValida = urlImagen.isNotBlank()
                         val categoriaEsValida = categoria.isNotBlank()
+
+                        // (Opcional) Error si no hay foto
+                        if (!urlEsValida) {
+                            // (Puedes añadir un 'urlImagenError' si quieres)
+                        }
 
                         val hasError = nombreError != null || precioError != null || stockError != null || descripcionError != null || !urlEsValida || !categoriaEsValida
 
@@ -275,7 +363,7 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                         if (!hasError) {
                             val newProduct = Product(
                                 id = 0,
-                                imageUrl = urlImagen,
+                                imageUrl = urlImagen, // <<< CAMBIO 6: Se guarda el nombre simulado
                                 name = nombre,
                                 category = categoria,
                                 price = precio,
