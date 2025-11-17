@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt")
 }
 
 android {
@@ -50,14 +49,19 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation)
-    implementation("androidx.room:room-ktx:2.8.2")
     implementation(libs.androidx.compose.ui.text)
-    kapt("androidx.room:room-compiler:2.8.2")
 
 
 
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    // Usamos Gson como convertidor JSON por su compatibilidad con el Backend de Java/Spring Boot
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
-    kapt("androidx.room:room-compiler:2.8.2")
+    // Cliente HTTP (OkHttp) e Interceptor para logging (útil para debug)
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     testImplementation(libs.junit)
