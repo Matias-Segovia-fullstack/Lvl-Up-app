@@ -3,7 +3,6 @@ package com.example.lvl_up
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.lvl_up.data.AppDatabase
 import com.example.lvl_up.data.User
 import com.example.lvl_up.data.UserDAO
 import kotlinx.coroutines.runBlocking

@@ -2,7 +2,6 @@
 package com.example.lvl_up
 
 import android.app.Application
-import com.example.lvl_up.data.AppDatabase
 import com.example.lvl_up.data.ProductRepository
 import com.example.lvl_up.data.UserRepository
 import com.example.lvl_up.data.CarritoRepository
