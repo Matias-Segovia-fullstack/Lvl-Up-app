@@ -8,7 +8,6 @@ import java.util.Collections.emptyList
 class CarritoRepository {
     private val apiService = RetrofitClient.apiService
 
-    // CORRECCIÓN: Usar 'flow' y 'emit' para llamar a la función suspend
     fun getCartItems(userId: Int): Flow<List<ItemCarrito>> = flow {
         emit(apiService.getCartDetailsByUserId(userId.toLong()))
     }.catch {
