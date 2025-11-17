@@ -34,6 +34,7 @@ import com.example.lvl_up.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.testTag // Test Unitario front end :)
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -103,7 +104,9 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                     loginError = null
                 },
                 label = { Text("Correo Electrónico") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("email_field"), // <<< CAMBIO 1
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { passwordFocusRequester.requestFocus() }),
@@ -122,7 +125,10 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                     loginError = null
                 },
                 label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth().focusRequester(passwordFocusRequester),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(passwordFocusRequester)
+                    .testTag("password_field"), // <<< CAMBIO 2
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
@@ -203,7 +209,10 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = NeonCyan, contentColor = DarkButton),
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .testTag("login_button"), // <<< CAMBIO 3
                 enabled = !isLoading
             ) {
                 Text("INICIAR SESIÓN", fontWeight = FontWeight.Bold, fontSize = 16.sp)
