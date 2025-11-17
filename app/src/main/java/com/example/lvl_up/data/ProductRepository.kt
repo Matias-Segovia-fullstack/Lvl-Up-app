@@ -40,12 +40,13 @@ class ProductRepository {
         return allProducts
     }
 
-    suspend fun decreaseStock(productId: Int, quantity: Int) {
+    suspend fun decreaseStock(productId: Long, quantity: Int) {
         try {
             val request = StockDecreaseRequest(quantity)
-            apiService.decreaseStock(productId.toLong(), request)
+            apiService.decreaseStock(productId, request)
         } catch (e: Exception) {
             println("Error al descontar stock vía API para Producto ID $productId: ${e.message}")
         }
     }
-}
+
+    }

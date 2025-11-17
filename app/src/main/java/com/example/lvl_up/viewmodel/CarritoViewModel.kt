@@ -76,7 +76,7 @@ class CarritoViewModel(
 
                 // 2. Por cada item, reduce el stock en la base de datos
                 for (item in itemsToCheckout) {
-                    productRepository.decreaseStock(item.productId.toInt(), item.cantidad)
+                    productRepository.decreaseStock(item.productId, item.cantidad)
                 }
 
                 // 3. Vacía el carrito del usuario
