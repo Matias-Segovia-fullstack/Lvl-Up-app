@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-const val BASE_URL = "http://10.0.2.2:8080/"
+const val BASE_URL = "http://192.168.1.81:8080/"//para emulador 10.0.2.2
 
 object RetrofitClient {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
