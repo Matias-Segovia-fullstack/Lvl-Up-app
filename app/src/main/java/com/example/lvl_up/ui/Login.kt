@@ -189,7 +189,7 @@ fun LoginForm(navController: NavController, viewModel: UserViewModel) {
                         timerJob.join()
 
                         if (user != null) {
-                            UserManager.currentUserId = user.id
+                            UserManager.currentUserId = user.id?.toInt()
                             UserManager.currentUserName = user.nombre
                             UserManager.currentUserEmail = user.correo
                             val destination = if (user.rol.equals("Administrador", ignoreCase = true)) {

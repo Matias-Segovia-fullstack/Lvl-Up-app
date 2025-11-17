@@ -113,7 +113,8 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = clpFormatter.format(p.price.replace(".", "").toLongOrNull() ?: 0L),
+                                // <<< CAMBIO: Se formatea el Int (price) directamente
+                                text = clpFormatter.format(p.price.toLong()),
                                 color = PriceSuccess,
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold
