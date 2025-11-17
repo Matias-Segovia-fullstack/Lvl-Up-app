@@ -47,4 +47,7 @@ interface ApiService {
 
     @DELETE("api/carrito/item/{itemCarritoId}")
     suspend fun removeItemFromCart(@Path("itemCarritoId") itemCarritoId: Long)
+
+    @PUT("api/products/decrease-stock/{id}")
+    suspend fun decreaseStock(@Path("id") id: Long, @Body request: StockDecreaseRequest)
 }
