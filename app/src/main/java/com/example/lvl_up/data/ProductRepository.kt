@@ -1,21 +1,18 @@
 package com.example.lvl_up.data
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow // ⬅️ AÑADIR ESTE IMPORT
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.catch
 import java.util.Collections.emptyList
 
 class ProductRepository {
     private val apiService = RetrofitClient.apiService
-
-    // CORRECCIÓN: Usar 'flow' y 'emit' para llamar a la función suspend
     val allProducts: Flow<List<Product>> = flow {
         emit(apiService.getAllProducts())
     }.catch {
         emit(emptyList())
     }
 
-    // CORRECCIÓN: Usar 'flow' para el conteo
     val productCount: Flow<Int> = flow {
         val count = apiService.countProducts()
         emit(count.toInt())

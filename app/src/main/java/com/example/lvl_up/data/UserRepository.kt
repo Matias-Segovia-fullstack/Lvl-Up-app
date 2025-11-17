@@ -1,7 +1,7 @@
 package com.example.lvl_up.data
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow // ⬅️ AÑADIR ESTE IMPORT
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.util.Collections.emptyList
@@ -9,14 +9,12 @@ import java.util.Collections.emptyList
 class UserRepository {
     private val apiService = RetrofitClient.apiService
 
-    // CORRECCIÓN: Usar 'flow' y 'emit' para llamar a la función suspend
     val allUsers: Flow<List<User>> = flow {
         emit(apiService.getAllUsers())
     }.catch {
         emit(emptyList())
     }
 
-    // CORRECCIÓN: Usar 'flow' para el conteo
     val userCount: Flow<Int> = flow {
         val count = apiService.countUsers()
         emit(count.toInt())
