@@ -1,22 +1,17 @@
 package com.example.lvl_up.data
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
-
-@Entity(tableName = "products_table",
-    indices = [
-        Index(value = ["name"], unique = true)
-    ])
 data class Product(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @SerializedName("idProducto")
+    val id: Long? = null,
 
     val imageUrl: String,
+
+    @SerializedName("nombreProducto")
     val name: String,
+
     val category: String,
     val price: String,
-    val stock: Int
+    val stock: String
 )
-

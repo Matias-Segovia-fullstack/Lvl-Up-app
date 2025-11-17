@@ -1,40 +1,22 @@
 package com.example.lvl_up.data
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-
-@Entity(
-    tableName = "items_carrito",
-    indices = [Index(value = ["productId", "userId"], unique = true)],
-    foreignKeys = [
-        ForeignKey(
-            entity = Product::class,
-            parentColumns = ["id"],
-            childColumns = ["productId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = User::class,
-            parentColumns = ["id"],
-            childColumns = ["userId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
-)
+import com.google.gson.annotations.SerializedName
 data class ItemCarrito(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @SerializedName("idItemCarrito")
+    val id: Long? = null,
 
-    val productId: Int,
-    val userId: Int,
+    val cantidad: Int,
 
-    var cantidad: Int,
+    @SerializedName("idUsuario")
+    val userId: Long,
+
+    @SerializedName("idProducto")
+    val productId: Long,
 
     val name: String,
-    val price: Double,
+    val price: String,
     val imageUrl: String,
-    val stock: Int
-)
+    val stock: String,
 
+    val subtotal: String
+)

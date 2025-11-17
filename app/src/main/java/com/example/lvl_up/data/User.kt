@@ -1,26 +1,25 @@
 package com.example.lvl_up.data
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "users_table",
-    indices = [
-        Index(value = ["rut"], unique = true),
-        Index(value = ["correo"], unique = true)
-])
 data class User(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @SerializedName("idUsuario")
+    val id: Long? = null,
 
+    @SerializedName("nombreUsuario")
     val nombre: String,
+
     val rut: String,
     val correo: String,
     val contrasena: String,
-    val rol: String,
-    val avatarUrl: String
 
+    @SerializedName("rolUsuario")
+    val rol: String,
+
+    val avatarUrl: String
 )
 
-
-
+data class UserCredentials(
+    val correo: String,
+    val contrasena: String
+)
