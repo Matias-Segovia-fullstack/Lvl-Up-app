@@ -85,7 +85,7 @@ fun CarritoScreen(navController: NavController) {
                         )
                     }
                 } else {
-                    items(itemsDelCarrito, key = { it.id }) { item ->
+                    items(itemsDelCarrito, key = { it.productId }) { item ->
                         FilaProductoCarrito(
                             item = item,
                             formatoMoneda = formatoMoneda,
