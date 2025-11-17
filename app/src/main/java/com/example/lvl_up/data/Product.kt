@@ -13,7 +13,7 @@ data class Product(
 
     val category: String,
     val price: String,
-    val stock: String
+    val stock: Int
 )
 
 data class StockDecreaseRequest(
