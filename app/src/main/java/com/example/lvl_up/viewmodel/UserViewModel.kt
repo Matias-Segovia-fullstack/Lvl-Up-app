@@ -3,6 +3,7 @@ package com.example.lvl_up.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lvl_up.data.User
+import com.example.lvl_up.data.UserManager
 import com.example.lvl_up.data.UserRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +37,15 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
     }
 
     suspend fun loginUser(email: String, password: String): User? {
-        return repository.findUserByCredentials(email, password)
+        val loginResponse = repository.findUserByCredentials(email, password)
+
+        return if (loginResponse != null) {
+            UserManager.authToken = loginResponse.token
+
+            repository.findByEmail(email)
+        } else {
+            null
+        }
     }
 
     suspend fun isRutTaken(rut: String): Boolean {
