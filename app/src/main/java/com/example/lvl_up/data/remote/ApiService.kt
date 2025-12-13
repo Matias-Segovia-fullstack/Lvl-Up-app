@@ -5,7 +5,7 @@ import retrofit2.http.*
 interface ApiService {
     // MÉTODOS DE USUARIO
     @POST("api/users/login")
-    suspend fun loginUser(@Body credentials: UserCredentials): User
+    suspend fun loginUser(@Body credentials: UserCredentials): LoginResponse
 
     @POST("api/users")
     suspend fun saveOrUpdateUser(@Body user: User): User
