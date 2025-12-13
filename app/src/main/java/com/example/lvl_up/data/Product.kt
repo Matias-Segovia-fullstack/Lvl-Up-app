@@ -12,6 +12,10 @@ data class Product(
     val name: String,
 
     val category: String,
-    val price: String,
-    val stock: String
+    val price: Int,
+    val stock: Int
+)
+
+data class StockDecreaseRequest(
+    val quantity: Int
 )

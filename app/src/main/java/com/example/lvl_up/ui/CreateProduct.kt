@@ -90,8 +90,8 @@ fun CreateProduct(navController: NavController) {
 }
 
 private fun validatePrice(price: String): Boolean {
-    val priceValue = price.replace(",", ".").toDoubleOrNull()
-    return priceValue != null && priceValue > 0.0
+    val priceValue = price.toIntOrNull()
+    return priceValue != null && priceValue > 0
 }
 
 private fun validateStock(stock: String): Boolean {
@@ -240,9 +240,9 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                     OutlinedTextField(
                         value = precio,
                         onValueChange = { newValue ->
-                            precio = newValue.filter { char -> char.isDigit() || char == '.' }
+                            precio = newValue.filter { char -> char.isDigit() } // <-- SOLO DÍGITOS
                             precioError = if (precio.isNotEmpty() && !validatePrice(precio)) {
-                                "El precio debe ser mayor que 0."
+                                "El precio debe ser un número mayor que 0."
                             } else null
                         },
                         label = { Text("Precio") },
@@ -366,7 +366,7 @@ fun CreateProductForm(navController: NavController, viewModel: ProductViewModel)
                                 imageUrl = urlImagen, // <<< CAMBIO 6: Se guarda el nombre simulado
                                 name = nombre,
                                 category = categoria,
-                                price = precio,
+                                price = precio.toIntOrNull() ?: 0,
                                 stock = stock.toIntOrNull() ?: 0
                             )
 

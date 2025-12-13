@@ -40,7 +40,13 @@ class ProductRepository {
         return allProducts
     }
 
-    suspend fun decreaseStock(productId: Int, quantity: Int) {
-        // Lógica de BE faltante: llamar a un endpoint de checkout o disminución de stock
+    suspend fun decreaseStock(productId: Long, quantity: Int) {
+        try {
+            val request = StockDecreaseRequest(quantity)
+            apiService.decreaseStock(productId, request)
+        } catch (e: Exception) {
+            println("Error al descontar stock vía API para Producto ID $productId: ${e.message}")
+        }
     }
-}
+
+    }

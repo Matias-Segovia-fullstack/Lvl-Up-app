@@ -5,7 +5,7 @@ import retrofit2.http.*
 interface ApiService {
     // MÉTODOS DE USUARIO
     @POST("api/users/login")
-    suspend fun loginUser(@Body credentials: UserCredentials): User
+    suspend fun loginUser(@Body credentials: UserCredentials): LoginResponse
 
     @POST("api/users")
     suspend fun saveOrUpdateUser(@Body user: User): User
@@ -47,4 +47,7 @@ interface ApiService {
 
     @DELETE("api/carrito/item/{itemCarritoId}")
     suspend fun removeItemFromCart(@Path("itemCarritoId") itemCarritoId: Long)
+
+    @PUT("api/products/decrease-stock/{id}")
+    suspend fun decreaseStock(@Path("id") id: Long, @Body request: StockDecreaseRequest)
 }
