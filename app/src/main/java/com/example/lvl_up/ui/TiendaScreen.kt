@@ -3,6 +3,7 @@ package com.example.lvl_up
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -32,12 +34,8 @@ import com.example.lvl_up.data.UserManager
 import androidx.navigation.NavController
 import com.example.lvl_up.ui.theme_Tienda.*
 
-
-
 data class OfferItem(val imageResId: Int, val title: String, val description: String, val price: String, val oldPrice: String)
 data class NewsItem(val title: String, val summary: String, val imageResId: Int)
-
-
 
 @Composable
 fun TiendaScreen(navController: NavController) {
@@ -54,7 +52,7 @@ fun TiendaScreen(navController: NavController) {
         ) {
             item { Navbar(navController) }
             item { Spacer(modifier = Modifier.height(16.dp)) }
-            item { CultureBanner() }
+            item { CultureBanner() } // Aquí está tu banner modificado
             item { Spacer(modifier = Modifier.height(16.dp)) }
             item { CartButton(navController) }
             item { Spacer(modifier = Modifier.height(24.dp)) }
@@ -69,10 +67,8 @@ fun TiendaScreen(navController: NavController) {
     }
 }
 
-
 @Composable
 fun Navbar(navController: NavController) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,13 +76,11 @@ fun Navbar(navController: NavController) {
             .padding(start = 16.dp, end = 16.dp, top = 40.dp, bottom = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = Color.Red)) { append("⚡") }
@@ -97,7 +91,6 @@ fun Navbar(navController: NavController) {
                 style = MaterialTheme.typography.headlineMedium,
             )
 
-
             Image(
                 painter = painterResource(id = R.drawable.pixel),
                 contentDescription = "Logo",
@@ -106,7 +99,6 @@ fun Navbar(navController: NavController) {
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-
 
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -141,8 +133,12 @@ fun Navbar(navController: NavController) {
     }
 }
 
+// --- FUNCIÓN MODIFICADA ---
 @Composable
 fun CultureBanner() {
+    val uriHandler = LocalUriHandler.current // Manejador de URLs
+    val urlParche = "https://www.ubisoft.com/es-mx/game/rainbow-six/siege/news-updates" // Link al parche
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,6 +149,9 @@ fun CultureBanner() {
                     colors = listOf(MaterialTheme.colorScheme.surface, CultureBannerEndBlue)
                 )
             )
+            .clickable { // <-- AGREGADO: Hace que el banner sea clicable
+                uriHandler.openUri(urlParche)
+            }
             .border(3.dp, NeonCyan, MaterialTheme.shapes.medium)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -186,6 +185,7 @@ fun CultureBanner() {
         )
     }
 }
+// --------------------------
 
 @Composable
 fun CartButton(navController: NavController) {
@@ -205,15 +205,12 @@ fun CartButton(navController: NavController) {
 
 @Composable
 fun OffersSection() {
-
-
     val offerItems = listOf(
         OfferItem(imageResId = R.drawable.audifonos, title = "Auriculares HyperX Cloud II", description = "sonido envolvente y máxima comodidad", price = "$69.990", oldPrice = "$79.990"),
         OfferItem(imageResId = R.drawable.pcgamer, title = "PC Gamer Elite", description = "Intel Core i7 + 32GB RAM tarjeta 4090", price = "$779.990", oldPrice = "$899.990"),
         OfferItem(imageResId = R.drawable.controldoom, title = "Control Xbox Series X", description = "Control Xbox Series X Inalámbrico edición Doom Eternal", price = "$54.990", oldPrice = "$59.990"),
         OfferItem(imageResId = R.drawable.mousee, title = "Mouse Gamer Logitech G502 HERO", description = "Mouse Gamer Logitech G502 HERO", price = "$39.990", oldPrice = "$49.990")
     )
-
 
     Column(
         modifier = Modifier
@@ -261,7 +258,6 @@ fun ProductCard(item: OfferItem) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-
                 painter = painterResource(id = item.imageResId),
                 contentDescription = item.title,
                 modifier = Modifier
@@ -353,10 +349,7 @@ fun CatalogBanner(navController: NavController) {
     }
 }
 
-
-
 @Composable
-
 fun NewsSection(navController: NavController) {
     val newsItems = listOf(
         NewsItem("🎮 Top 5 Mejores Juegos Retro de PC", "Revive la nostalgia gamer con estos clásicos inolvidables...", R.drawable.age),
@@ -372,7 +365,6 @@ fun NewsSection(navController: NavController) {
                 shadow = Shadow(color = NeonCyan.copy(alpha = 0.5f), blurRadius = 8f)
             )
         )
-
 
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             newsItems.forEach { item ->
@@ -404,14 +396,11 @@ fun NewsCard(item: NewsItem, modifier: Modifier = Modifier, navController: NavCo
                 Text(item.title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp))
                 Text(item.summary, color = MutedText, fontSize = 14.sp, modifier = Modifier.padding(bottom = 8.dp))
 
-
                 Button(
                     onClick = {
                         if (item.title.contains("Top 5 Mejores Juegos Retro de PC")) {
-
                             navController.navigate("retroGamesDetail")
                         } else if (item.title.contains("Guía para Elegir tu PC Gamer Ideal")) {
-
                             navController.navigate("pcGamerGuide")
                         }
                     },
@@ -420,11 +409,10 @@ fun NewsCard(item: NewsItem, modifier: Modifier = Modifier, navController: NavCo
                 ) {
                     Text("Leer más", color = DarkButton)
                 }
-                }
             }
         }
     }
-
+}
 
 @Composable
 fun Footer() {
@@ -441,7 +429,6 @@ fun Footer() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-
             Column(Modifier.fillMaxWidth()) {
                 Text("Sobre Nosotros", color = NeonCyan, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
                 Text(
