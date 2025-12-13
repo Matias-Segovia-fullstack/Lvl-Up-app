@@ -190,7 +190,7 @@ fun CultureBanner() {
 @Composable
 fun CartButton(navController: NavController) {
     Button(
-        onClick = { navController.navigate("admin") },
+        onClick = { navController.navigate("carrito") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)

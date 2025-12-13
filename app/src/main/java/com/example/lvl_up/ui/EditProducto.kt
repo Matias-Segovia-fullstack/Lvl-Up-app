@@ -77,9 +77,10 @@ fun EditProduct(navController: NavController, productId: Int) {
     }
 }
 
+// Actualizamos esta validación para que funcione con el String numérico
 private fun validatePrice(price: String): Boolean {
-    val priceValue = price.replace(",", ".").toDoubleOrNull()
-    return priceValue != null && priceValue > 0.0
+    val priceValue = price.toIntOrNull() // Convertir a Int
+    return priceValue != null && priceValue > 0
 }
 
 private fun validateStock(stock: String): Boolean {
@@ -109,7 +110,8 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
             product?.let {
                 nombre = it.name
                 categoria = it.category
-                precio = it.price
+                // <<< CAMBIO 1: Convertir el Int (price) a String para mostrarlo
+                precio = it.price.toString()
                 stock = it.stock.toString()
             } ?: run {
                 nombre = "Producto no encontrado"
@@ -144,7 +146,7 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
         Text(
             text = categoria,
             fontSize = 20.sp,
-            color = FondoPanel,
+            color = FondoPanel, // Esto parece un error, quizás quisiste usar TextoPrincipal?
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -168,7 +170,8 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
                 OutlinedTextField(
                     value = precio,
                     onValueChange = { newValue ->
-                        precio = newValue.filter { char -> char.isDigit() || char == '.' || char == ',' }
+                        // <<< CAMBIO 2: Filtrar para que solo acepte dígitos
+                        precio = newValue.filter { char -> char.isDigit() }
                         precioError = if (precio.isNotEmpty() && !validatePrice(precio)) {
                             "El precio debe ser mayor que 0."
                         } else null
@@ -211,8 +214,9 @@ fun EditProductForm(navController: NavController, viewModel: ProductViewModel, p
                         focusManager.clearFocus()
 
                         if (!hasError && originalProduct != null) {
+                            // <<< CAMBIO 3: Convertir el String (precio) de vuelta a Int
                             val updatedProduct = originalProduct!!.copy(
-                                price = precio,
+                                price = precio.toIntOrNull() ?: originalProduct!!.price,
                                 stock = stock.toIntOrNull() ?: originalProduct!!.stock
                             )
 
