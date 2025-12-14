@@ -99,7 +99,7 @@ fun CarritoScreen(navController: NavController) {
             ResumenCompra(
                 total = formatoMoneda.format(totalCompra),
                 onVaciarCarrito = { viewModel.vaciarCarrito() },
-                onPagar = { viewModel.checkout() } // ✅ 2. CONECTA LA FUNCIÓN DE PAGO
+                onPagar = { viewModel.checkout() }
             )
         }
     }

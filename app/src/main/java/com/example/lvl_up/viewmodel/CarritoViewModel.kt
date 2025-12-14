@@ -9,8 +9,9 @@ import com.example.lvl_up.data.ProductRepository
 import com.example.lvl_up.data.UserManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf // <-- IMPORTACIÓN AÑADIDA
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.flatMapLatest // <--- ¡IMPORTACIÓN CLAVE!
 import kotlinx.coroutines.launch
 import kotlin.collections.emptyList
 
@@ -19,17 +20,17 @@ class CarritoViewModel(
     private val productRepository: ProductRepository
 ) : ViewModel() {
 
-    private val currentUserId = UserManager.currentUserId
+    // 🔴 ELIMINAMOS la línea de inicialización estática 'private val currentUserId = UserManager.currentUserId'
 
     val itemsDelCarrito: StateFlow<List<ItemCarrito>> =
-        currentUserId?.let { userId ->
-            repository.getCartItems(userId)
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5000),
-                    initialValue = emptyList()
-                )
-        } ?: flowOf<List<ItemCarrito>>(emptyList())
+        UserManager.currentUserIdFlow // <-- Usa el Flow reactivo
+            .flatMapLatest { userId -> // Se re-ejecuta cada vez que el userId cambia
+                if (userId != null) {
+                    repository.getCartItems(userId) // Carga el carrito del usuario logueado
+                } else {
+                    flowOf(emptyList()) // Si no hay usuario, muestra un carrito vacío
+                }
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -51,10 +52,9 @@ class CarritoViewModel(
     }
 
 
-
     fun vaciarCarrito() {
         viewModelScope.launch {
-            currentUserId?.let { userId ->
+            UserManager.currentUserId?.let { userId ->
                 repository.clearCart(userId)
             }
         }
@@ -80,7 +80,7 @@ class CarritoViewModel(
     }
     fun checkout() {
         viewModelScope.launch {
-            currentUserId?.let { userId ->
+            UserManager.currentUserId?.let { userId ->
                 // 1. Obtiene la lista actual de items en el carrito
                 val itemsToCheckout = itemsDelCarrito.value
 
