@@ -62,12 +62,22 @@ class CarritoViewModel(
 
     fun addToCart(product: Product, quantity: Int) {
         viewModelScope.launch {
-            currentUserId?.let { userId ->
-                repository.addToCart(product, userId, quantity)
+            try {
+
+                val userId = UserManager.currentUserId
+                if (userId != null && product.id != null && product.id > 0) {
+                    repository.addToCart(product, userId, quantity)
+                    println("Producto agregado con éxito: ${product.name}")
+                } else {
+                    println("Error: Usuario no logueado o ID de producto inválido")
+                }
+            } catch (e: Exception) {
+
+                println("Error al agregar al carrito: ${e.message}")
+                e.printStackTrace()
             }
         }
     }
-
     fun checkout() {
         viewModelScope.launch {
             currentUserId?.let { userId ->
