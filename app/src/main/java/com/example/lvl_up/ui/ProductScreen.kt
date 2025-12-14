@@ -30,6 +30,8 @@ import com.example.lvl_up.viewmodel.ProductViewModel
 import com.example.lvl_up.viewmodel.ProductViewModelFactory
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 
 @Composable
@@ -172,19 +174,14 @@ fun ProductRow(product: Product, navController: NavController) {
                 .padding(start = 16.dp),
             horizontalAlignment = Alignment.Start
         ){
-            Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .aspectRatio(1f)
-                .background(FondoDark, shape = RoundedCornerShape(10.dp))
-                .border(2.dp, Accent, RoundedCornerShape(10.dp))
-
-        ) {
-            Text(text = "IMG",
-                fontSize = 10.sp,
-                modifier = Modifier.align(Alignment.Center),
-                color = TextoSecundario)
-        }
+            AsyncImage(
+                model = product.imageUrl, // <-- La URL de la imagen
+                contentDescription = product.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth() // Ocupa todo el ancho
+                    .height(60.dp) // Altura específica
+            )
             Spacer(Modifier.height(7.dp))
 
             Text(product.name,
