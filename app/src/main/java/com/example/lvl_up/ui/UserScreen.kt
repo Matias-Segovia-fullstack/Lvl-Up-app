@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import coil.compose.AsyncImage
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -17,7 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -164,17 +167,17 @@ fun UserRow(user: User, navController: NavController) {
                 .padding(start = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Box(
+            AsyncImage(
+                model = user.avatarUrl, // <-- CARGA LA IMAGEN DESDE LA URL DEL USUARIO
+                contentDescription = "Avatar de ${user.nombre}",
                 modifier = Modifier
-                    .size(130.dp) // size: 42px in css + border
+                    .size(130.dp)
                     .background(FondoDark, shape = RoundedCornerShape(50))
                     .border(2.dp, Accent, RoundedCornerShape(50)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "AVATAR",
-                    fontSize = 8.sp,
-                    color = TextoSecundario)
-            }
+                contentScale = ContentScale.Crop, // Para que la imagen ocupe todo el espacio
+                // Opcional: Usa un icono local si la URL falla o mientras carga
+                error = painterResource(id = com.example.lvl_up.R.drawable.ic_person)
+            )
             Spacer(Modifier.height(7.dp))
 
             // Name

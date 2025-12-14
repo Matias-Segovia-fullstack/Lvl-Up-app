@@ -1,4 +1,4 @@
-package com.example.lvl_up.ui
+    package com.example.lvl_up.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
+import coil.compose.AsyncImage
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,14 +85,17 @@ fun ProductoVentaScreen(navController: NavController, productId: Int) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.placeholder_product),
+                        AsyncImage(
+                            model = p.imageUrl, // <-- CARGA LA IMAGEN DESDE LA URL DEL BACKEND
                             contentDescription = p.name,
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .aspectRatio(1f)
                                 .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(16.dp)),
-                            contentScale = ContentScale.Fit
+                            contentScale = ContentScale.Fit,
+                            // Opcional: Usa el placeholder existente si la URL tarda en cargar o falla
+                            placeholder = painterResource(id = R.drawable.placeholder_product),
+                            error = painterResource(id = R.drawable.placeholder_product)
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))
